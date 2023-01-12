@@ -1,0 +1,28 @@
+﻿<UserControl x:Class="WPFWeather.UserControls.WeatherCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WPFWeather.UserControls"
+             xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             mc:Ignorable="d"
+>
+	<Viewbox Stretch="Uniform" 
+			 DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}" 
+			 d:DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:WeatherCard}}}"
+    >
+		<Grid 
+            Width="40"
+            Height="70"
+            TextBlock.Foreground="{StaticResource BrushFgDefault}"
+            TextBlock.FontSize="12"
+        >
+			<Border
+                Background="{StaticResource BrushBgOverlay}"
+                CornerRadius="7" />
+			<TextBlock Text="{Binding Time}" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+			<icons:PackIconRemixIcon Height="32" Kind="HeavyShowersFill" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+			<TextBlock Text="{Binding Temperature, Mode=OneWay, StringFormat={}{0}°}" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+		</Grid>
+	</Viewbox>
+</UserControl>

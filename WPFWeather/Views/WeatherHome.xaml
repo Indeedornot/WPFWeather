@@ -1,0 +1,93 @@
+﻿<UserControl x:Class="WPFWeather.Views.WeatherHome"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:WPFWeather.Views"
+             xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
+			 xmlns:control="clr-namespace:WPFWeather.UserControls"
+             mc:Ignorable="d"
+             d:DesignHeight="450" Loaded="UserControl_Loaded" Width="835">
+	<Grid Background="{DynamicResource BrushBgDefault}">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="65*"></RowDefinition>
+			<RowDefinition Height="35*"></RowDefinition>
+		</Grid.RowDefinitions>
+		<Grid Row="0">
+			<Grid Margin="32 16 32 8">
+				<Border
+                    Background="{StaticResource BrushBgSubtle}"
+                    CornerRadius="7" />
+
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="4*"/>
+						<ColumnDefinition Width="7*"/>
+					</Grid.ColumnDefinitions>
+					<Viewbox Stretch="Uniform" Grid.Column="0">
+						<icons:PackIconUnicons Foreground="{StaticResource BrushFgIcon}" Kind="CloudWind" Padding="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+					</Viewbox>
+					<Grid Grid.Column="1" Margin="0 0 5 0">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="*"/>
+							<RowDefinition Height="*"/>
+						</Grid.RowDefinitions>
+						<Grid Grid.Row="0">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="*"/>
+								<RowDefinition Height="3*"/>
+							</Grid.RowDefinitions>
+							<Viewbox HorizontalAlignment="Left" Stretch="Uniform" Grid.Row="1">
+								<DockPanel>
+									<TextBlock FontSize="20" Foreground="{StaticResource BrushFgDefault}">15°</TextBlock>
+									<TextBlock FontSize="15" Margin="3 0 0 1" VerticalAlignment="Bottom" Foreground="{StaticResource BrushFgMuted}" HorizontalAlignment="Right">Kraków</TextBlock>
+								</DockPanel>
+							</Viewbox>
+						</Grid>
+						<Grid Grid.Row="1">
+							<Viewbox HorizontalAlignment="Left" Margin="0 5 0 5">
+								<Viewbox.Resources>
+									<Style TargetType="{x:Type control:InfoCard}">
+										<Setter Property="Margin" Value="7 0"/>
+									</Style>
+								</Viewbox.Resources>
+								<StackPanel Orientation="Horizontal">
+									<control:InfoCard Grid.Column="0" Info="Humidity" Text="24%"/>
+									<control:InfoCard Grid.Column="1" Info="Humidity" Text="24%"/>
+									<control:InfoCard Grid.Column="2" Info="Humidity" Text="24%"/>
+								</StackPanel>
+							</Viewbox>
+						</Grid>
+					</Grid>
+				</Grid>
+			</Grid>
+		</Grid>
+		<Grid Row="1">
+			<ListView Background="Transparent" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+				<ListView.ItemsPanel>
+					<ItemsPanelTemplate>
+						<StackPanel Orientation="Horizontal" Background="Transparent"/>
+					</ItemsPanelTemplate>
+				</ListView.ItemsPanel>
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<control:WeatherCard MinWidth="85" Time="05.26" Temperature="15"/>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+
+				<ListItem/>
+				<ListItem/>
+				<ListItem/>
+				<ListItem/>
+				<ListItem/>
+				<ListItem/>
+				<ListItem/>
+				<ListItem/>
+				<ListItem/>
+				<ListItem/>
+				<ListItem/>
+				<ListItem/>
+			</ListView>
+		</Grid>
+	</Grid>
+</UserControl>
