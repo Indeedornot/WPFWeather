@@ -7,7 +7,7 @@
              xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
              mc:Ignorable="d"
 >
-	<Viewbox Stretch="Uniform" 
+	<Viewbox Stretch="Uniform"
 			 DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}" 
 			 d:DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:WeatherCard}}}"
     >

@@ -6,3 +6,5 @@ riderModule.iml
 .idea/.idea.WPFWeather/.idea/
 
 .vs/
+
+WPFWeather/appsettings.json

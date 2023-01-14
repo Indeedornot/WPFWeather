@@ -8,7 +8,7 @@
     <Compile Update="UserControls\WeatherCard.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\WeatherHome.xaml.cs">
+    <Compile Update="Views\WeatherHomeView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -19,7 +19,7 @@
     <Page Update="UserControls\WeatherCard.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\WeatherHome.xaml">
+    <Page Update="Views\WeatherHomeView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

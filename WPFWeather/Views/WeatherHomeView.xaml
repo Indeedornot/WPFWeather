@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="WPFWeather.Views.WeatherHome"
+﻿<UserControl x:Class="WPFWeather.Views.WeatherHomeView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -6,9 +6,16 @@
              xmlns:local="clr-namespace:WPFWeather.Views"
              xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
 			 xmlns:control="clr-namespace:WPFWeather.UserControls"
+			 xmlns:converters="clr-namespace:WPFWeather.Converters"
+			 xmlns:vms="clr-namespace:WPFWeather.ViewModels"
+			 xmlns:models="clr-namespace:WPFWeather.Models"
              mc:Ignorable="d"
-             d:DesignHeight="450" Loaded="UserControl_Loaded" Width="835">
-	<Grid Background="{DynamicResource BrushBgDefault}">
+             d:DesignHeight="450" d:DesignWidth="835">
+	<UserControl.Resources>
+		<converters:MathConverter x:Key="MathConverter"/>
+	</UserControl.Resources>
+	<Grid Background="{DynamicResource BrushBgDefault}"
+		  d:DataContext="{d:DesignInstance vms:WeatherHomeViewModel}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="65*"></RowDefinition>
 			<RowDefinition Height="35*"></RowDefinition>
@@ -39,8 +46,8 @@
 							</Grid.RowDefinitions>
 							<Viewbox HorizontalAlignment="Left" Stretch="Uniform" Grid.Row="1">
 								<DockPanel>
-									<TextBlock FontSize="20" Foreground="{StaticResource BrushFgDefault}">15°</TextBlock>
-									<TextBlock FontSize="15" Margin="3 0 0 1" VerticalAlignment="Bottom" Foreground="{StaticResource BrushFgMuted}" HorizontalAlignment="Right">Kraków</TextBlock>
+									<TextBlock FontSize="20" Text="{Binding SelectedWeather.Temperature}" Foreground="{StaticResource BrushFgDefault}"/>
+									<TextBlock FontSize="15" Text="{Binding Location}" Margin="3 0 0 1" VerticalAlignment="Bottom" Foreground="{StaticResource BrushFgMuted}" HorizontalAlignment="Right"/>
 								</DockPanel>
 							</Viewbox>
 						</Grid>
@@ -52,9 +59,9 @@
 									</Style>
 								</Viewbox.Resources>
 								<StackPanel Orientation="Horizontal">
-									<control:InfoCard Grid.Column="0" Info="Humidity" Text="24%"/>
-									<control:InfoCard Grid.Column="1" Info="Humidity" Text="24%"/>
-									<control:InfoCard Grid.Column="2" Info="Humidity" Text="24%"/>
+									<control:InfoCard Grid.Column="0" Info="Cloudiness" Text="{Binding SelectedWeather.Cloudiness}"/>
+									<control:InfoCard Grid.Column="1" Info="Humidity" Text="{Binding SelectedWeather.Humidity}"/>
+									<control:InfoCard Grid.Column="2" Info="Pressure" Text="{Binding SelectedWeather.Pressure}"/>
 								</StackPanel>
 							</Viewbox>
 						</Grid>
@@ -63,18 +70,26 @@
 			</Grid>
 		</Grid>
 		<Grid Row="1">
-			<ListView Background="Transparent" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+			<ListView Background="Transparent" 
+					  HorizontalContentAlignment="Stretch"
+					  VerticalContentAlignment="Stretch"
+					  ItemsSource="{Binding Weather}">
 				<ListView.ItemsPanel>
 					<ItemsPanelTemplate>
 						<StackPanel Orientation="Horizontal" Background="Transparent"/>
 					</ItemsPanelTemplate>
 				</ListView.ItemsPanel>
 				<ListView.ItemTemplate>
-					<DataTemplate>
-						<control:WeatherCard MinWidth="85" Time="05.26" Temperature="15"/>
+					<DataTemplate DataType="models:WeatherData">
+						<control:WeatherCard MinWidth="{Binding ActualHeight, RelativeSource={RelativeSource Self},Converter={StaticResource MathConverter},ConverterParameter=(@VALUE/7*4)}" 
+											 HorizontalAlignment="Stretch" 
+											 VerticalAlignment="Stretch" 
+											 Time="{Binding Time, StringFormat={}{0:HH:mm}}" 
+											 Temperature="{Binding Temperature}"/>
 					</DataTemplate>
 				</ListView.ItemTemplate>
 
+				<!--<ListItem/>
 				<ListItem/>
 				<ListItem/>
 				<ListItem/>
@@ -85,8 +100,7 @@
 				<ListItem/>
 				<ListItem/>
 				<ListItem/>
-				<ListItem/>
-				<ListItem/>
+				<ListItem/>-->
 			</ListView>
 		</Grid>
 	</Grid>
