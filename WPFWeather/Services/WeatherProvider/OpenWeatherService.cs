@@ -7,6 +7,7 @@ using Weather.NET;
 using Weather.NET.Enums;
 using Weather.NET.Models.WeatherModel;
 
+using WPFWeather.Exceptions;
 using WPFWeather.Exceptions.Location;
 using WPFWeather.Models;
 using WPFWeather.Models.LocationInfo;
@@ -15,6 +16,7 @@ namespace WPFWeather.Services.WeatherProvider;
 
 public class OpenWeatherService : IWeatherProvider {
 
+    private readonly string NoConnectionError = "No such host is known. (api.openweathermap.org:443)";
     private readonly WeatherClient weatherApi;
     public OpenWeatherService(string ApiKey) {
         weatherApi = new WeatherClient(ApiKey);
@@ -33,6 +35,10 @@ public class OpenWeatherService : IWeatherProvider {
             return forecasts.Select(WeatherModelToWeather);
         }
         catch (Exception e) {
+            if (e.Message == NoConnectionError) {
+                throw new NoConnectionException("No internet connection");
+            }
+
             throw new InvalidZipCodeException("Invalid ZipCode", e, address);
         }
     }
@@ -50,7 +56,11 @@ public class OpenWeatherService : IWeatherProvider {
             return forecasts.Select(WeatherModelToWeather);
         }
         catch (Exception e) {
-            throw new InvalidAddressException("Invalid ZipCode", e, address);
+            if (e.Message == NoConnectionError) {
+                throw new NoConnectionException("No internet connection");
+            }
+
+            throw new InvalidAddressException("Invalid Address", e, address);
         }
     }
 

@@ -4,9 +4,7 @@ namespace WPFWeather.Commands;
 public abstract class AsyncCommandBase : CommandBase {
     private bool _isExecuting;
     private bool IsExecuting {
-        get {
-            return _isExecuting;
-        }
+        get => _isExecuting;
         set {
             _isExecuting = value;
             OnCanExecutedChanged();

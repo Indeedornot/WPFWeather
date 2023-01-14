@@ -18,8 +18,10 @@ public class AppStore {
 
     private Lazy<Task> _initializeLazy;
     public bool IsLoading { get; internal set; }
+    public bool IsLoaded { get; internal set; }
 
     public event Action<bool> LoadingChanged;
+    public event Action<bool> LoadedChanged;
     public event Action<IEnumerable<WeatherData>> WeatherForecastsChanged;
     public event Action<Location?> LocationChanged;
 
@@ -33,13 +35,23 @@ public class AppStore {
         _initializeLazy = new Lazy<Task>(FetchWeather(_location));
     }
 
-    private async Task FetchWeather(Location? location) {
-        setLoading(true);
+    public void SetLocation(Location? location) {
+        _location = location;
+        LocationChanged?.Invoke(location);
 
+        //TODO: ADD CANCELING
+        Load();
+    }
+
+    public void SetWeather(IEnumerable<WeatherData> weather) {
+        _weatherForecasts = weather.ToList();
+        WeatherForecastsChanged?.Invoke(weather);
+    }
+
+    private async Task FetchWeather(Location? location) {
         if (location is not (ZipCode or Address)) {
             _weatherForecasts.Clear();
             WeatherForecastsChanged?.Invoke(_weatherForecasts);
-            setLoading(false);
             return;
         }
 
@@ -54,34 +66,38 @@ public class AppStore {
         }
 
         WeatherForecastsChanged?.Invoke(_weatherForecasts);
-        setLoading(false);
-    }
-
-    private void setLoading(bool value) {
-        IsLoading = value;
-        LoadingChanged?.Invoke(value);
     }
 
     public async Task Load() {
         try {
+            setLoading(true);
+            setLoaded(false);
             await _initializeLazy.Value;
+            setLoading(false);
+            setLoaded(true);
+
+            //we restart the process every load
+            _initializeLazy = new Lazy<Task>(FetchWeather(_location));
         }
         catch (Exception) {
+            setLoading(false);
+            setLoaded(false);
             _initializeLazy = new Lazy<Task>(FetchWeather(_location));
             throw;
         }
     }
 
-    public void SetLocation(Location? location) {
-        _location = location;
-        LocationChanged?.Invoke(location);
+    private void setLoading(bool value) {
+        if (IsLoading == value) return;
 
-        //TODO: ADD CANCELING
-        FetchWeather(location);
+        IsLoading = value;
+        LoadingChanged?.Invoke(value);
     }
 
-    public void SetWeather(IEnumerable<WeatherData> weather) {
-        _weatherForecasts = weather.ToList();
-        WeatherForecastsChanged?.Invoke(weather);
+    private void setLoaded(bool value) {
+        if (IsLoaded == value) return;
+
+        IsLoaded = value;
+        LoadedChanged?.Invoke(value);
     }
 }

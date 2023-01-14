@@ -13,65 +13,125 @@
              d:DesignHeight="450" d:DesignWidth="835">
 	<UserControl.Resources>
 		<converters:MathConverter x:Key="MathConverter"/>
+		<converters:InverseBooleanToVisibilityConverter x:Key="InverseVisibilityConverter"/>
+		<BooleanToVisibilityConverter x:Key="VisibilityConverter"/>
 	</UserControl.Resources>
 	<Grid Background="{DynamicResource BrushBgDefault}"
 		  d:DataContext="{d:DesignInstance vms:WeatherHomeViewModel}">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="65*"></RowDefinition>
-			<RowDefinition Height="35*"></RowDefinition>
-		</Grid.RowDefinitions>
-		<Grid Row="0">
-			<Grid Margin="16 16 16 8">
+		<Grid Visibility="{Binding HasError, Converter={StaticResource VisibilityConverter}}">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="2*"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="2*"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+
+			<Grid Grid.Column="1" Grid.Row="1">
 				<Border
                     Background="{StaticResource BrushBgSubtle}"
                     CornerRadius="7" />
 
 				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto"/>
-						<ColumnDefinition Width="*"/>
-					</Grid.ColumnDefinitions>
-					
-					<Viewbox Grid.Column="0" Stretch="Uniform" >
-						<icons:PackIconUnicons Foreground="{StaticResource BrushFgIcon}" Kind="CloudWind" Padding="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="*"/>
+					</Grid.RowDefinitions>
+					<Viewbox Grid.Row="1" Stretch="Uniform" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+						<TextBlock d:Text="No internet connection"  Text="{Binding ErrorMessage}" Foreground="{StaticResource BrushFgEmphasis}"/>
 					</Viewbox>
-					<Grid Grid.Column="1" Margin="0 0 5 0">
+					<Grid Grid.Row="2" Margin="3"  HorizontalAlignment="Center" Width="{Binding ActualHeight, RelativeSource={RelativeSource Self},Converter={StaticResource MathConverter}, ConverterParameter=@VALUE*2}">
 						<Grid.RowDefinitions>
 							<RowDefinition Height="*"/>
-							<RowDefinition Height="*"/>
+							<RowDefinition Height="8*"/>
+							<RowDefinition Height="4*"/>
 						</Grid.RowDefinitions>
-						<Grid Grid.Row="0">
-							<Grid.RowDefinitions>
-								<RowDefinition Height="*"/>
-								<RowDefinition Height="3*"/>
-							</Grid.RowDefinitions>
-							<Viewbox HorizontalAlignment="Left" Stretch="Uniform" Grid.Row="1">
-								<DockPanel>
-									<TextBlock FontSize="20" Text="{Binding SelectedWeather.Temperature, StringFormat={}{0}°}" Foreground="{StaticResource BrushFgDefault}"/>
-									<TextBlock FontSize="15" Text="{Binding Location}" Margin="3 0 0 1" VerticalAlignment="Bottom" Foreground="{StaticResource BrushFgMuted}" HorizontalAlignment="Right"/>
-								</DockPanel>
-							</Viewbox>
-						</Grid>
 						<Grid Grid.Row="1">
-							<Viewbox HorizontalAlignment="Left" Margin="0 5 0 5">
-								<Viewbox.Resources>
-									<Style TargetType="{x:Type control:InfoCard}">
-										<Setter Property="Margin" Value="7 0"/>
-									</Style>
-								</Viewbox.Resources>
-								<StackPanel Orientation="Horizontal">
-									<control:InfoCard Grid.Column="0" Info="Cloudiness" Text="{Binding SelectedWeather.Cloudiness, StringFormat={}{0}%}"/>
-									<control:InfoCard Grid.Column="1" Info="Humidity" Text="{Binding SelectedWeather.Humidity, StringFormat={}{0}%}"/>
-									<control:InfoCard Grid.Column="2" Info="Pressure" Text="{Binding SelectedWeather.Pressure, StringFormat={}{0}hPa}"/>
-								</StackPanel>
-							</Viewbox>
+							<Border
+							Background="{StaticResource BrushBgOverlay}"
+							CornerRadius="7" />
+
+							<Button BorderThickness="0" Background="Transparent" VerticalAlignment="Stretch"  Command="{Binding ReloadCommand}">
+								<Viewbox>
+									<TextBlock Text="Reload" Margin="4" Foreground="{StaticResource BrushFgDefault}"/>
+								</Viewbox>
+							</Button>
 						</Grid>
 					</Grid>
+
 				</Grid>
 			</Grid>
 		</Grid>
-		<Grid Row="1">
-			<ListView Background="Transparent" 
+		<Grid d:Visibility="Hidden" Visibility="{Binding HasError, Converter={StaticResource InverseVisibilityConverter}}">
+			<Grid d:Visibility="Hidden" Visibility="{Binding IsLoading,Converter={StaticResource VisibilityConverter}}">
+				<Viewbox Stretch="Uniform" Margin="20">
+					<icons:PackIconUnicons Kind="Sync" Foreground="{StaticResource BrushFgIcon}"/>
+				</Viewbox>
+			</Grid>
+			<Grid d:Visibility="Visible" Visibility="{Binding IsLoading, Converter={StaticResource InverseVisibilityConverter}}">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="65*"></RowDefinition>
+					<RowDefinition Height="35*"></RowDefinition>
+				</Grid.RowDefinitions>
+				<Grid Row="0">
+					<Grid Margin="16 16 16 8">
+						<Border
+                    Background="{StaticResource BrushBgSubtle}"
+                    CornerRadius="7" />
+
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+
+							<Viewbox Grid.Column="0" Stretch="Uniform" >
+								<icons:PackIconUnicons Foreground="{StaticResource BrushFgIcon}" Kind="CloudWind" Padding="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+							</Viewbox>
+							<Grid Grid.Column="1" Margin="0 0 5 0">
+								<Grid.RowDefinitions>
+									<RowDefinition Height="*"/>
+									<RowDefinition Height="*"/>
+								</Grid.RowDefinitions>
+								<Grid Grid.Row="0">
+									<Grid.RowDefinitions>
+										<RowDefinition Height="*"/>
+										<RowDefinition Height="3*"/>
+									</Grid.RowDefinitions>
+									<Button Foreground="{StaticResource BrushFgMuted}" Command="{Binding ReloadCommand}" Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" Background="Transparent" BorderThickness="0" HorizontalAlignment="Right" Margin="0 8 5 0">
+										<icons:PackIconUnicons Kind="Sync" />
+									</Button>
+									<Viewbox HorizontalAlignment="Left" Stretch="Uniform" Grid.Row="1">
+										<DockPanel>
+											<TextBlock FontSize="20" Text="{Binding SelectedWeather.Temperature, StringFormat={}{0}°}" Foreground="{StaticResource BrushFgDefault}"/>
+											<TextBlock FontSize="15" Text="{Binding Location}" Margin="3 0 0 1" VerticalAlignment="Bottom" Foreground="{StaticResource BrushFgMuted}" HorizontalAlignment="Right"/>
+										</DockPanel>
+									</Viewbox>
+								</Grid>
+								<Grid Grid.Row="1">
+									<Viewbox HorizontalAlignment="Left" Margin="0 5 0 5">
+										<Viewbox.Resources>
+											<Style TargetType="{x:Type control:InfoCard}">
+												<Setter Property="Margin" Value="7 0"/>
+											</Style>
+										</Viewbox.Resources>
+										<StackPanel Orientation="Horizontal">
+											<control:InfoCard Grid.Column="0" Info="Cloudiness" Text="{Binding SelectedWeather.Cloudiness, StringFormat={}{0}%}"/>
+											<control:InfoCard Grid.Column="1" Info="Humidity" Text="{Binding SelectedWeather.Humidity, StringFormat={}{0}%}"/>
+											<control:InfoCard Grid.Column="2" Info="Pressure" Text="{Binding SelectedWeather.Pressure, StringFormat={}{0}hPa}"/>
+										</StackPanel>
+									</Viewbox>
+								</Grid>
+							</Grid>
+						</Grid>
+					</Grid>
+				</Grid>
+				<Grid Row="1">
+					<ListView Background="Transparent" 
 					  HorizontalContentAlignment="Stretch"
 					  VerticalContentAlignment="Stretch"
 					  ItemsSource="{Binding Weather}"
@@ -79,34 +139,23 @@
 					  Margin="16 0"
 					  SelectedItem="{Binding SelectedWeather}"
 					  >
-				<ListView.ItemsPanel>
-					<ItemsPanelTemplate>
-						<StackPanel Orientation="Horizontal" Background="Transparent"/>
-					</ItemsPanelTemplate>
-				</ListView.ItemsPanel>
-				<ListView.ItemTemplate>
-					<DataTemplate DataType="models:WeatherData">
-						<control:WeatherCard MinWidth="{Binding ActualHeight, RelativeSource={RelativeSource Self},Converter={StaticResource MathConverter},ConverterParameter=(@VALUE/7*4)}" 
+						<ListView.ItemsPanel>
+							<ItemsPanelTemplate>
+								<StackPanel Orientation="Horizontal" Background="Transparent"/>
+							</ItemsPanelTemplate>
+						</ListView.ItemsPanel>
+						<ListView.ItemTemplate>
+							<DataTemplate DataType="models:WeatherData">
+								<control:WeatherCard MinWidth="{Binding ActualHeight, RelativeSource={RelativeSource Self},Converter={StaticResource MathConverter},ConverterParameter=(@VALUE/7*4)}" 
 											 HorizontalAlignment="Stretch" 
 											 VerticalAlignment="Stretch"
 											 Time="{Binding Time, StringFormat={}{0:HH:mm}}" 
 											 Temperature="{Binding Temperature}"/>
-					</DataTemplate>
-				</ListView.ItemTemplate>
-
-				<!--<ListItem/>
-				<ListItem/>
-				<ListItem/>
-				<ListItem/>
-				<ListItem/>
-				<ListItem/>
-				<ListItem/>
-				<ListItem/>
-				<ListItem/>
-				<ListItem/>
-				<ListItem/>
-				<ListItem/>-->
-			</ListView>
+							</DataTemplate>
+						</ListView.ItemTemplate>
+					</ListView>
+				</Grid>
+			</Grid>
 		</Grid>
 	</Grid>
 </UserControl>
