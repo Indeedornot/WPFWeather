@@ -21,17 +21,18 @@
 			<RowDefinition Height="35*"></RowDefinition>
 		</Grid.RowDefinitions>
 		<Grid Row="0">
-			<Grid Margin="32 16 32 8">
+			<Grid Margin="16 16 16 8">
 				<Border
                     Background="{StaticResource BrushBgSubtle}"
                     CornerRadius="7" />
 
 				<Grid>
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="4*"/>
-						<ColumnDefinition Width="7*"/>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="*"/>
 					</Grid.ColumnDefinitions>
-					<Viewbox Stretch="Uniform" Grid.Column="0">
+					
+					<Viewbox Grid.Column="0" Stretch="Uniform" >
 						<icons:PackIconUnicons Foreground="{StaticResource BrushFgIcon}" Kind="CloudWind" Padding="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 					</Viewbox>
 					<Grid Grid.Column="1" Margin="0 0 5 0">
@@ -46,7 +47,7 @@
 							</Grid.RowDefinitions>
 							<Viewbox HorizontalAlignment="Left" Stretch="Uniform" Grid.Row="1">
 								<DockPanel>
-									<TextBlock FontSize="20" Text="{Binding SelectedWeather.Temperature}" Foreground="{StaticResource BrushFgDefault}"/>
+									<TextBlock FontSize="20" Text="{Binding SelectedWeather.Temperature, StringFormat={}{0}°}" Foreground="{StaticResource BrushFgDefault}"/>
 									<TextBlock FontSize="15" Text="{Binding Location}" Margin="3 0 0 1" VerticalAlignment="Bottom" Foreground="{StaticResource BrushFgMuted}" HorizontalAlignment="Right"/>
 								</DockPanel>
 							</Viewbox>
@@ -59,9 +60,9 @@
 									</Style>
 								</Viewbox.Resources>
 								<StackPanel Orientation="Horizontal">
-									<control:InfoCard Grid.Column="0" Info="Cloudiness" Text="{Binding SelectedWeather.Cloudiness}"/>
-									<control:InfoCard Grid.Column="1" Info="Humidity" Text="{Binding SelectedWeather.Humidity}"/>
-									<control:InfoCard Grid.Column="2" Info="Pressure" Text="{Binding SelectedWeather.Pressure}"/>
+									<control:InfoCard Grid.Column="0" Info="Cloudiness" Text="{Binding SelectedWeather.Cloudiness, StringFormat={}{0}%}"/>
+									<control:InfoCard Grid.Column="1" Info="Humidity" Text="{Binding SelectedWeather.Humidity, StringFormat={}{0}%}"/>
+									<control:InfoCard Grid.Column="2" Info="Pressure" Text="{Binding SelectedWeather.Pressure, StringFormat={}{0}hPa}"/>
 								</StackPanel>
 							</Viewbox>
 						</Grid>
@@ -73,7 +74,11 @@
 			<ListView Background="Transparent" 
 					  HorizontalContentAlignment="Stretch"
 					  VerticalContentAlignment="Stretch"
-					  ItemsSource="{Binding Weather}">
+					  ItemsSource="{Binding Weather}"
+					  BorderThickness="0"
+					  Margin="16 0"
+					  SelectedItem="{Binding SelectedWeather}"
+					  >
 				<ListView.ItemsPanel>
 					<ItemsPanelTemplate>
 						<StackPanel Orientation="Horizontal" Background="Transparent"/>
@@ -83,7 +88,7 @@
 					<DataTemplate DataType="models:WeatherData">
 						<control:WeatherCard MinWidth="{Binding ActualHeight, RelativeSource={RelativeSource Self},Converter={StaticResource MathConverter},ConverterParameter=(@VALUE/7*4)}" 
 											 HorizontalAlignment="Stretch" 
-											 VerticalAlignment="Stretch" 
+											 VerticalAlignment="Stretch"
 											 Time="{Binding Time, StringFormat={}{0:HH:mm}}" 
 											 Temperature="{Binding Temperature}"/>
 					</DataTemplate>
