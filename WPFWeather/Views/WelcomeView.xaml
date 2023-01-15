@@ -1,0 +1,83 @@
+﻿<UserControl x:Class="WPFWeather.Views.WelcomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WPFWeather.Views"
+			 xmlns:vms="clr-namespace:WPFWeather.ViewModels"
+			 xmlns:converters="clr-namespace:WPFWeather.Converters"
+			 mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+>
+	<UserControl.Resources>
+		<converters:MathConverter x:Key="MathConverter"/>
+	</UserControl.Resources>
+	<Grid Background="{StaticResource BrushBgDefault}"
+		  d:DataContext="{d:DesignInstance vms:WelcomeViewModel}">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="2*"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="2*"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+
+		<Grid Grid.Row="1" Grid.Column="1">
+			<Border
+				CornerRadius="7"
+				Background="{StaticResource BrushBgSubtle}"/>
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="*"/>
+					<RowDefinition Height="*"/>
+					<RowDefinition Height="*"/>
+				</Grid.RowDefinitions>
+
+				<Viewbox Stretch="Uniform" Grid.Row="1">
+					<TextBlock
+						FontSize="40"
+						FontWeight="Bold"
+						Foreground="{StaticResource BrushFgDefault}"
+						Text="Welcome to WPF Weather!"
+					/>
+				</Viewbox>
+
+
+				<Grid Grid.Row="2" HorizontalAlignment="Center" Width="{Binding ActualHeight, RelativeSource={RelativeSource Self},Converter={StaticResource MathConverter}, ConverterParameter=@VALUE*2}">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="3*"/>
+						<RowDefinition Height="*"/>
+					</Grid.RowDefinitions>
+
+					<Grid Grid.Row="1">
+						<Border
+						CornerRadius="7"
+						Background="{StaticResource BrushBgOverlay}"
+					/>
+
+						<Viewbox>
+							<Button
+							Command="{Binding SetLocationCommand}"
+							Foreground="{StaticResource BrushFgDefault}"
+							Background="Transparent"
+							BorderThickness="0"
+							VerticalAlignment="Center"
+							HorizontalAlignment="Center"
+							FontSize="8"
+							Margin="2"
+						>
+								<TextBlock>
+								Set Location
+								</TextBlock>
+							</Button>
+						</Viewbox>
+					</Grid>
+				</Grid>
+			</Grid>
+		</Grid>
+	</Grid>
+</UserControl>

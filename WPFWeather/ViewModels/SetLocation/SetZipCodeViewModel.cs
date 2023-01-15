@@ -8,7 +8,7 @@ using WPFWeather.Stores;
 
 namespace WPFWeather.ViewModels.SetLocation;
 internal class SetZipCodeViewModel : ViewModelBase, IViewModelSetLocation {
-    private string _zipCode;
+    private string _zipCode = string.Empty;
     public string ZipCode {
         get => _zipCode;
         set {
@@ -17,7 +17,7 @@ internal class SetZipCodeViewModel : ViewModelBase, IViewModelSetLocation {
         }
     }
 
-    private string _countryCode;
+    private string _countryCode = string.Empty;
     public string CountryCode {
         get => _countryCode;
         set {
@@ -35,17 +35,15 @@ internal class SetZipCodeViewModel : ViewModelBase, IViewModelSetLocation {
         }
     }
 
-    public Location Location => new ZipCode(ZipCode, CountryCode);
+    public async Task<Location?> GetLocation() {
+        return await _weatherProvider.GetLocationByZipCode(new ZipCode(ZipCode, CountryCode));
+    }
 
     public SetLocationCommand SumbitCommand { get; }
 
-    private IWeatherProvider _weatherProvider;
+    private readonly IWeatherProvider _weatherProvider;
     public SetZipCodeViewModel(IWeatherProvider weatherProvider, AppStore appStore, NavigationService<WeatherHomeViewModel> weatherHomeNavigationService) {
         _weatherProvider = weatherProvider;
         SumbitCommand = new SetLocationCommand(this, appStore, weatherHomeNavigationService);
-    }
-
-    public Task<bool> ValidateLocation() {
-        return _weatherProvider.ValidateZipCodeAsync(new ZipCode(ZipCode, CountryCode));
     }
 }

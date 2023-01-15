@@ -47,8 +47,7 @@ namespace WPFWeather {
         protected override void OnStartup(StartupEventArgs e) {
             _host.Start();
 
-            NavigationService<WeatherHomeViewModel> navigationService = _host.Services.GetRequiredService<NavigationService<WeatherHomeViewModel>>();
-            navigationService.Navigate();
+            SetInitialView();
 
             MainWindow = _host.Services.GetRequiredService<MainWindow>();
             MainWindow.Show();
@@ -57,14 +56,37 @@ namespace WPFWeather {
         }
 
         protected override void OnExit(ExitEventArgs e) {
-            var appStore = _host.Services.GetRequiredService<AppStore>();
-            var persistentDataManager = _host.Services.GetRequiredService<IPersistentDataManager>();
-            persistentDataManager.SaveData(new PersistentData() {
-                Location = appStore.Location
-            });
-
+            SavePersistentData();
             _host.Dispose();
             base.OnExit(e);
+        }
+
+        private void SetInitialView() {
+            IPersistentDataManager persistentDataManager = _host.Services.GetRequiredService<IPersistentDataManager>();
+            PersistentData? persistentData = null;
+            try {
+                persistentData = persistentDataManager.GetPersistentData();
+            }
+            catch (Exception) { }
+
+            if (persistentData?.Location != null) {
+                NavigationService<WeatherHomeViewModel> navigationService = _host.Services.GetRequiredService<NavigationService<WeatherHomeViewModel>>();
+                navigationService.Navigate();
+            }
+            else {
+                NavigationService<WelcomeViewModel> navigationService = _host.Services.GetRequiredService<NavigationService<WelcomeViewModel>>();
+                navigationService.Navigate();
+            }
+        }
+
+        private void SavePersistentData() {
+            var appStore = _host.Services.GetRequiredService<AppStore>();
+            var persistentDataManager = _host.Services.GetRequiredService<IPersistentDataManager>();
+            if (appStore.Location != null) {
+                persistentDataManager.SaveData(new PersistentData() {
+                    Location = appStore.Location
+                });
+            }
         }
     }
 }

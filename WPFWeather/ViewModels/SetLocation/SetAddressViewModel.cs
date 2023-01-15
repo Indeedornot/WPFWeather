@@ -8,9 +8,7 @@ using WPFWeather.Stores;
 
 namespace WPFWeather.ViewModels.SetLocation;
 public class SetAddressViewModel : ViewModelBase, IViewModelSetLocation {
-    public Location Location => new Address(CityName);
-
-    private string _cityName;
+    private string _cityName = string.Empty;
     public string CityName {
         get => _cityName;
         set {
@@ -36,7 +34,7 @@ public class SetAddressViewModel : ViewModelBase, IViewModelSetLocation {
         SumbitCommand = new SetLocationCommand(this, appStore, weatherHomeNavigationService);
     }
 
-    public Task<bool> ValidateLocation() {
-        return _weatherProvider.ValidateAddressAsync(new Address(CityName));
+    public async Task<Location?> GetLocation() {
+        return await _weatherProvider.GetLocationByAddress(new Address(CityName));
     }
 }

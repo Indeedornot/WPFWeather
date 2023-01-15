@@ -83,14 +83,13 @@ public class WeatherHomeViewModel : ViewModelBase {
 
     public async Task EnsureDataLoaded() {
         try {
-            if (!_appStore.IsInitialized) {
-                await _appStore.Load();
-                return;
-            }
-
             OnWeatherUpdate(_appStore.WeatherForecasts);
             OnLocationUpdate(_appStore.Location);
             OnLoadingUpdate(_appStore.IsLoading);
+
+            if (!_appStore.IsInitialized) {
+                await _appStore.Load();
+            }
         }
         catch (Exception e) {
             ErrorMessage = "Error Loading Forecasts";

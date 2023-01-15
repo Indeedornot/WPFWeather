@@ -20,6 +20,9 @@
     <Compile Update="Views\WeatherHomeView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\WelcomeView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="UserControls\InfoCard.xaml">
@@ -38,6 +41,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\WeatherHomeView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\WelcomeView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

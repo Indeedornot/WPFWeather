@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 
+using WPFWeather.Models.LocationInfo;
 using WPFWeather.Services.NavigationService;
 using WPFWeather.Stores;
 using WPFWeather.ViewModels;
@@ -18,14 +19,14 @@ public class SetLocationCommand : AsyncCommandBase {
     }
 
     public override async Task ExecuteAsync(object parameter) {
-        bool validLocation = await _viewModel.ValidateLocation();
-        if (!validLocation) {
+        Location? location = await _viewModel.GetLocation();
+        if (location == null) {
             _viewModel.IsValidLocation = false;
             return;
         }
 
         _viewModel.IsValidLocation = true;
-        _appStore.SetLocation(_viewModel.Location);
+        _appStore.SetLocation(location);
         _weatherHomeNavigationService.Navigate();
     }
 }

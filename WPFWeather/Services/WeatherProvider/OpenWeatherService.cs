@@ -8,9 +8,10 @@ using Weather.NET.Enums;
 using Weather.NET.Models.WeatherModel;
 
 using WPFWeather.Exceptions;
-using WPFWeather.Exceptions.Location;
 using WPFWeather.Models;
 using WPFWeather.Models.LocationInfo;
+
+using Location = WPFWeather.Models.LocationInfo.Location;
 
 namespace WPFWeather.Services.WeatherProvider;
 
@@ -23,15 +24,15 @@ public class OpenWeatherService : IWeatherProvider {
     }
 
     /// <summary>
-    /// Gets the weather forecasts for city given by ZipCode data
+    /// Gets the weather forecasts for city by location
     /// </summary>
     /// <param name="address"></param>
     /// <returns>Forecasts for the next 3 days separated each by 3 hours</returns>
-    /// <exception cref="InvalidZipCodeException">Thrown when OpenWeatherApi can't find the address</exception>
-    public async Task<IEnumerable<WeatherData>> GetWeatherAsync(ZipCode address) {
+    /// <exception cref="InvalidLocationException">Thrown when OpenWeatherApi can't find the address</exception>
+    public async Task<IEnumerable<WeatherData>> GetWeatherAsync(Location location) {
         try {
             //Gets forecast, each timestamp is separated by 3h
-            List<WeatherModel> forecasts = await weatherApi.GetForecastAsync(address.PostalCode, address.CountryCode, timestampCount: 24, measurement: Measurement.Metric);
+            List<WeatherModel> forecasts = await weatherApi.GetForecastAsync(latitude: location.Latitude, longitude: location.Longitude, timestampCount: 24, measurement: Measurement.Metric);
             return forecasts.Select(WeatherModelToWeather);
         }
         catch (Exception e) {
@@ -39,28 +40,7 @@ public class OpenWeatherService : IWeatherProvider {
                 throw new NoConnectionException("No internet connection");
             }
 
-            throw new InvalidZipCodeException("Invalid ZipCode", e, address);
-        }
-    }
-
-    /// <summary>
-    /// Gets the weather forecasts for city given by Address data
-    /// </summary>
-    /// <param name="address"></param>
-    /// <returns>Forecasts for the next 3 days separated each by 3 hours</returns>
-    /// <exception cref="InvalidAddressException">Thrown when OpenWeatherApi can't find the address</exception>
-    public async Task<IEnumerable<WeatherData>> GetWeatherAsync(Address address) {
-        try {
-            //Gets forecast, each timestamp is separated by 3h
-            List<WeatherModel> forecasts = await weatherApi.GetForecastAsync(address.CityName, timestampCount: 24, measurement: Measurement.Metric);
-            return forecasts.Select(WeatherModelToWeather);
-        }
-        catch (Exception e) {
-            if (e.Message == NoConnectionError) {
-                throw new NoConnectionException("No internet connection");
-            }
-
-            throw new InvalidAddressException("Invalid Address", e, address);
+            throw new InvalidLocationException("Invalid Location", e, location);
         }
     }
 
@@ -79,31 +59,63 @@ public class OpenWeatherService : IWeatherProvider {
         };
     }
 
-    public async Task<bool> ValidateAddressAsync(Address address) {
-        if (string.IsNullOrWhiteSpace(address.CityName)) {
-            return false;
-        }
-
+    public async Task<bool> ValidateLocation(Location location) {
         try {
-            Task<WeatherModel> task = weatherApi.GetCurrentWeatherAsync(cityName: address.CityName);
-            return await Task.WhenAny(task, Task.Delay(1000)) == task;
+            Task<WeatherModel> task = weatherApi.GetCurrentWeatherAsync(latitude: location.Latitude, longitude: location.Longitude);
+            if (await Task.WhenAny(task, Task.Delay(1000)) == task) {
+                return true;
+            }
+
+            return false;
         }
         catch {
             return false;
         }
     }
 
-    public async Task<bool> ValidateZipCodeAsync(ZipCode zipCode) {
+    public async Task<Location?> GetLocationByAddress(Address address) {
+        if (string.IsNullOrWhiteSpace(address.CityName)) {
+            return null;
+        }
+
+        try {
+            Task<WeatherModel> task = weatherApi.GetCurrentWeatherAsync(cityName: address.CityName);
+            if (await Task.WhenAny(task, Task.Delay(1000)) == task) {
+                WeatherModel model = await task;
+                return new Location() {
+                    CityName = model.CityName,
+                    Latitude = model.Location.Latitude,
+                    Longitude = model.Location.Longitude
+                };
+            }
+
+            return null;
+        }
+        catch {
+            return null;
+        }
+    }
+
+    public async Task<Location?> GetLocationByZipCode(ZipCode zipCode) {
         if (string.IsNullOrWhiteSpace(zipCode.PostalCode) || string.IsNullOrWhiteSpace(zipCode.CountryCode)) {
-            return false;
+            return null;
         }
 
         try {
             Task<WeatherModel> task = weatherApi.GetCurrentWeatherAsync(zipCode: zipCode.PostalCode, countryCode: zipCode.CountryCode);
-            return await Task.WhenAny(task, Task.Delay(1000)) == task;
+            if (await Task.WhenAny(task, Task.Delay(1000)) == task) {
+                WeatherModel model = await task;
+                return new Location() {
+                    CityName = model.CityName,
+                    Latitude = model.Location.Latitude,
+                    Longitude = model.Location.Longitude
+                };
+            }
+
+            return null;
         }
         catch {
-            return false;
+            return null;
         }
     }
 }

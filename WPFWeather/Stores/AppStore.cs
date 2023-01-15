@@ -50,33 +50,22 @@ public class AppStore {
     }
 
     public async Task FetchWeather() {
-        if (Location == null) return;
-
-        setLoading(true);
-        if (_location is not (ZipCode or Address)) {
+        if (Location == null) {
             _weatherForecasts.Clear();
             WeatherForecastsChanged?.Invoke(_weatherForecasts);
-            setLoading(false);
             return;
         }
 
-        IEnumerable<WeatherData> weather;
-        if (_location is ZipCode zipCode) {
-            weather = await _weatherProvider.GetWeatherAsync(zipCode);
-            _weatherForecasts = weather.ToList();
-        }
-        else if (_location is Address address) {
-            weather = await _weatherProvider.GetWeatherAsync(address);
-            _weatherForecasts = weather.ToList();
-        }
-
+        setLoading(true);
+        IEnumerable<WeatherData> weather = await _weatherProvider.GetWeatherAsync(Location);
+        _weatherForecasts = weather.ToList();
         WeatherForecastsChanged?.Invoke(_weatherForecasts);
         setLoading(false);
     }
 
     #region Loading
     /// <summary>
-    /// ONLY IF NOT LOADED EARLIER
+    /// <b> ONLY SETS PROPERTY IF NOT SET EARLIER </b>
     /// <br/> Loads the data from the persistent storage and fetches weather
     /// <br/> Invokes events
     /// </summary>
@@ -94,10 +83,16 @@ public class AppStore {
 
     private async Task initialize() {
         setLoading(true);
-        _location = GetPersistentData()?.Location;
-        LocationChanged?.Invoke(_location);
+        if (Location == null) {
+            var persistentData = GetPersistentData();
+            _location = persistentData?.Location;
+            LocationChanged?.Invoke(_location);
+        }
 
-        await FetchWeather();
+        if (WeatherForecasts.Count() == 0) {
+            await FetchWeather();
+        }
+
         setLoading(false);
     }
 

@@ -1,9 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿namespace WPFWeather.Models.LocationInfo;
 
-namespace WPFWeather.Models.LocationInfo;
-
-[JsonDerivedType(typeof(ZipCode), "ZipCode")]
-public class ZipCode : Location {
+public class ZipCode {
     public string PostalCode { get; internal set; }
     public string CountryCode { get; internal set; }
 

@@ -1,8 +1,11 @@
-﻿using System.Text.Json.Serialization;
+﻿namespace WPFWeather.Models.LocationInfo;
 
-namespace WPFWeather.Models.LocationInfo;
-
-[JsonDerivedType(typeof(ZipCode), "ZipCode")]
-[JsonDerivedType(typeof(Address), "Address")]
 public class Location {
+    public string CityName { get; set; }
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
+
+    public override string ToString() {
+        return CityName;
+    }
 }

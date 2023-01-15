@@ -4,7 +4,6 @@ using WPFWeather.Models.LocationInfo;
 
 namespace WPFWeather.ViewModels.SetLocation;
 public interface IViewModelSetLocation {
-    public Location Location { get; }
+    public Task<Location?> GetLocation();
     public bool IsValidLocation { get; set; }
-    public Task<bool> ValidateLocation();
 }

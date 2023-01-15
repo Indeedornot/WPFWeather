@@ -1,9 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿namespace WPFWeather.Models.LocationInfo;
 
-namespace WPFWeather.Models.LocationInfo;
-
-[JsonDerivedType(typeof(Address), "Address")]
-public class Address : Location {
+public class Address {
     public string CityName { get; }
 
     public Address(string cityName) {
