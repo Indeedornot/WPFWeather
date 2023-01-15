@@ -8,6 +8,15 @@
     <Compile Update="UserControls\WeatherCard.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\SetLocation\SetAddressView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\SetLocation\SetLocationView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\SetLocation\SetZipCodeView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\WeatherHomeView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -17,6 +26,15 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="UserControls\WeatherCard.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\SetLocation\SetAddressView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\SetLocation\SetLocationView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\SetLocation\SetZipCodeView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\WeatherHomeView.xaml">

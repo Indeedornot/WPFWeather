@@ -3,10 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using System;
-using System.Diagnostics;
 using System.Windows;
 
-using WPFWeather.Exceptions.PersistentData;
 using WPFWeather.HostBuilder;
 using WPFWeather.Models;
 using WPFWeather.Services.DataProvider;
@@ -36,16 +34,7 @@ namespace WPFWeather {
                     IPersistentDataManager persistentDataManager = new JsonPersistentDataManager();
                     services.AddSingleton(persistentDataManager);
 
-                    PersistentData? persistentData;
-                    try {
-                        persistentData = persistentDataManager.GetPersistentData();
-                    }
-                    catch (PersistentDataReadException e) {
-                        Debug.WriteLine("No persistent data found");
-                        persistentData = null;
-                    }
-
-                    services.AddSingleton((s) => new AppStore(s.GetRequiredService<IWeatherProvider>(), persistentData));
+                    services.AddSingleton((s) => new AppStore(s.GetRequiredService<IWeatherProvider>(), persistentDataManager));
 
                     services.AddSingleton<NavigationStore>();
                     services.AddSingleton(s => new MainWindow() {

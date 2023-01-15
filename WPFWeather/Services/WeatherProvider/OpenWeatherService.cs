@@ -78,4 +78,32 @@ public class OpenWeatherService : IWeatherProvider {
             Time = model.AnalysisDate
         };
     }
+
+    public async Task<bool> ValidateAddressAsync(Address address) {
+        if (string.IsNullOrWhiteSpace(address.CityName)) {
+            return false;
+        }
+
+        try {
+            Task<WeatherModel> task = weatherApi.GetCurrentWeatherAsync(cityName: address.CityName);
+            return await Task.WhenAny(task, Task.Delay(1000)) == task;
+        }
+        catch {
+            return false;
+        }
+    }
+
+    public async Task<bool> ValidateZipCodeAsync(ZipCode zipCode) {
+        if (string.IsNullOrWhiteSpace(zipCode.PostalCode) || string.IsNullOrWhiteSpace(zipCode.CountryCode)) {
+            return false;
+        }
+
+        try {
+            Task<WeatherModel> task = weatherApi.GetCurrentWeatherAsync(zipCode: zipCode.PostalCode, countryCode: zipCode.CountryCode);
+            return await Task.WhenAny(task, Task.Delay(1000)) == task;
+        }
+        catch {
+            return false;
+        }
+    }
 }

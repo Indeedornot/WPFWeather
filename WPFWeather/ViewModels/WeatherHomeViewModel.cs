@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using WPFWeather.Commands;
 using WPFWeather.Models;
 using WPFWeather.Models.LocationInfo;
+using WPFWeather.Services.NavigationService;
 using WPFWeather.Stores;
+using WPFWeather.ViewModels.SetLocation;
 
 namespace WPFWeather.ViewModels;
 public class WeatherHomeViewModel : ViewModelBase {
@@ -61,8 +63,9 @@ public class WeatherHomeViewModel : ViewModelBase {
     }
 
     public LoadWeatherCommand ReloadCommand { get; }
+    public NavigateCommand<SetLocationViewModel> SetLocationCommand { get; }
 
-    public WeatherHomeViewModel(AppStore appStore) {
+    public WeatherHomeViewModel(AppStore appStore, NavigationService<SetLocationViewModel> setLocationNavigationService) {
         _appStore = appStore;
 
         _location = _appStore.Location?.ToString();
@@ -72,20 +75,22 @@ public class WeatherHomeViewModel : ViewModelBase {
         _appStore.WeatherForecastsChanged += OnWeatherUpdate;
         _appStore.LoadingChanged += OnLoadingUpdate;
 
-        if (!_appStore.IsLoaded) { loadData(); }
-        else {
-            Weather = new(_appStore.WeatherForecasts);
-            Location = _appStore.Location is not null ? _appStore.Location.ToString() : string.Empty;
-            IsLoading = _appStore.IsLoading;
-        }
+        EnsureDataLoaded();
 
-        ReloadCommand = new LoadWeatherCommand(this, _appStore);
+        ReloadCommand = new LoadWeatherCommand(_appStore);
+        SetLocationCommand = new NavigateCommand<SetLocationViewModel>(setLocationNavigationService);
     }
 
-    public async Task loadData() {
-        //Maybe add try/catch in case loading fails and do infinite loading
+    public async Task EnsureDataLoaded() {
         try {
-            await _appStore.Load();
+            if (!_appStore.IsInitialized) {
+                await _appStore.Load();
+                return;
+            }
+
+            OnWeatherUpdate(_appStore.WeatherForecasts);
+            OnLocationUpdate(_appStore.Location);
+            OnLoadingUpdate(_appStore.IsLoading);
         }
         catch (Exception e) {
             ErrorMessage = "Error Loading Forecasts";
@@ -104,11 +109,9 @@ public class WeatherHomeViewModel : ViewModelBase {
             SelectedWeather = Weather[0];
         }
     }
-
     private void OnLocationUpdate(Location? location) {
         Location = location?.ToString();
     }
-
     private void OnLoadingUpdate(bool isLoading) {
         IsLoading = isLoading;
 

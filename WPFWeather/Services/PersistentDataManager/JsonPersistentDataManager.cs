@@ -26,11 +26,19 @@ public class JsonPersistentDataManager : IPersistentDataManager {
 
     public void SaveData(PersistentData data) {
         try {
+            EnsureDataFolderExists();
             string json = JsonSerializer.Serialize(data);
             File.WriteAllText(storageFilePath, json);
         }
         catch (Exception e) {
             throw new PersistentDataSaveException("Error saving persistent data", e);
+        }
+    }
+
+    private void EnsureDataFolderExists() {
+        string folderPath = Path.Combine(_storageFolderPath, _storageFolderName);
+        if (!Directory.Exists(folderPath)) {
+            Directory.CreateDirectory(folderPath);
         }
     }
 }

@@ -5,13 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFWeather"
 		xmlns:vms="clr-namespace:WPFWeather.ViewModels"
+		xmlns:vmsSL="clr-namespace:WPFWeather.ViewModels.SetLocation"
         xmlns:views="clr-namespace:WPFWeather.Views"
+		xmlns:viewsSL="clr-namespace:WPFWeather.Views.SetLocation"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
 	<Grid d:DataContext="{d:DesignInstance vms:MainViewModel}">
 		<Grid.Resources>
 			<DataTemplate DataType="{x:Type vms:WeatherHomeViewModel}">
 				<views:WeatherHomeView />
+			</DataTemplate>
+			<DataTemplate DataType="{x:Type vmsSL:SetLocationViewModel}">
+				<viewsSL:SetLocationView />
 			</DataTemplate>
 		</Grid.Resources>
 
