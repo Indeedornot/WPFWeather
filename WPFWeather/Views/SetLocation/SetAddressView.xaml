@@ -13,7 +13,7 @@
 			<ColumnDefinition Width="10"/>
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
-		<TextBox Grid.Column="0" VerticalAlignment="Top" Text="{Binding CityName, UpdateSourceTrigger=PropertyChanged}"/>
-		<Button Grid.Column="2" Command="{Binding SumbitCommand}" VerticalAlignment="Top">Sumbit</Button>
+		<TextBox Grid.Column="0" VerticalAlignment="Stretch" Style="{DynamicResource RoundBorder}" Text="{Binding CityName, UpdateSourceTrigger=PropertyChanged}"/>
+		<Button Grid.Column="2" Command="{Binding SumbitCommand}" VerticalAlignment="Stretch" Style="{DynamicResource RoundBorder}">Sumbit</Button>
 	</Grid>
 </UserControl>

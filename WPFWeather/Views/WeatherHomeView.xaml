@@ -102,7 +102,10 @@
 										HorizontalAlignment="Right" VerticalAlignment="Top" 
 										Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" Background="Transparent" BorderThickness="0" 
 										Command="{Binding ReloadCommand}" 
-										Margin="0 16 13 0">
+										Margin="0 12 9 0"
+										Style="{DynamicResource RoundBorder}"
+										Padding="4"
+								>
 									<icons:PackIconUnicons Kind="Sync" />
 								</Button>
 								<Grid Grid.Row="0">
@@ -119,6 +122,7 @@
 												Margin="3 0 0 1" 
 												Foreground="{StaticResource BrushFgMuted}"
 												Background="Transparent" BorderThickness="0"
+												Style="{DynamicResource RoundBorder}"
 												VerticalAlignment="Bottom" 
 												HorizontalAlignment="Right"
 											>
@@ -147,13 +151,13 @@
 				</Grid>
 				<Grid Row="1">
 					<ListView Background="Transparent" 
-					  HorizontalContentAlignment="Stretch"
-					  VerticalContentAlignment="Stretch"
-					  ItemsSource="{Binding Weather}"
-					  BorderThickness="0"
-					  Margin="16 0"
-					  SelectedItem="{Binding SelectedWeather}"
-					  >
+						HorizontalContentAlignment="Stretch"
+						VerticalContentAlignment="Stretch"
+						ItemsSource="{Binding Weather}"
+						BorderThickness="0"
+						Margin="16 0"
+						SelectedItem="{Binding SelectedWeather}"
+					 >
 						<ListView.ItemsPanel>
 							<ItemsPanelTemplate>
 								<StackPanel Orientation="Horizontal" Background="Transparent"/>

@@ -54,22 +54,18 @@
 					</Grid.RowDefinitions>
 
 					<Grid Grid.Row="1">
-						<Border
-						CornerRadius="7"
-						Background="{StaticResource BrushBgOverlay}"
-					/>
-
 						<Viewbox>
 							<Button
-							Command="{Binding SetLocationCommand}"
-							Foreground="{StaticResource BrushFgDefault}"
-							Background="Transparent"
-							BorderThickness="0"
-							VerticalAlignment="Center"
-							HorizontalAlignment="Center"
-							FontSize="8"
-							Margin="2"
-						>
+								Command="{Binding SetLocationCommand}"
+								Foreground="{StaticResource BrushFgDefault}"
+								BorderThickness="0"
+								VerticalAlignment="Center"
+								HorizontalAlignment="Center"
+								FontSize="8"
+								Margin="2"
+								Background="{StaticResource BrushBgOverlay}"
+								Style="{DynamicResource RoundBorder}"
+							>
 								<TextBlock>
 								Set Location
 								</TextBlock>

@@ -10,13 +10,17 @@
 	<Grid d:DataContext="{d:DesignInstance vmsSL:SetZipCodeViewModel}">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="3*"/>
-			<ColumnDefinition Width="10"/>
+			<ColumnDefinition Width="3"/>
 			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="10"/>
+			<ColumnDefinition Width="3"/>
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
-		<TextBox Grid.Column="0" VerticalAlignment="Top" Text="{Binding ZipCode, UpdateSourceTrigger=PropertyChanged}"/>
-		<TextBox Grid.Column="2" VerticalAlignment="Top" Text="{Binding CountryCode, UpdateSourceTrigger=PropertyChanged}"/>
-		<Button Grid.Column="4" Command="{Binding SumbitCommand}" VerticalAlignment="Top">Sumbit</Button>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		
+		<TextBox Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch" Style="{DynamicResource RoundBorder}" Text="{Binding ZipCode, UpdateSourceTrigger=PropertyChanged}"/>
+		<TextBox Grid.Row="1" Grid.Column="2" VerticalAlignment="Stretch" Style="{DynamicResource RoundBorder}" Text="{Binding CountryCode, UpdateSourceTrigger=PropertyChanged}"/>
+		<Button Grid.Row="1" Grid.Column="4" Command="{Binding SumbitCommand}" VerticalAlignment="Stretch" Style="{DynamicResource RoundBorder}">Sumbit</Button>
 	</Grid>
 </UserControl>

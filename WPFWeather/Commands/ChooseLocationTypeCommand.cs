@@ -1,6 +1,4 @@
-﻿using WPFWeather.ViewModels.SetLocation;
-
-namespace WPFWeather.Commands;
+﻿namespace WPFWeather.Commands;
 public class ChooseLocationTypeCommand : CommandBase {
     private readonly SetLocationViewModel _viewModel;
     public ChooseLocationTypeCommand(SetLocationViewModel viewModel) {
