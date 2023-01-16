@@ -36,6 +36,8 @@ namespace WPFWeather {
 
                     services.AddSingleton((s) => new AppStore(s.GetRequiredService<IWeatherProvider>(), persistentDataManager));
 
+                    services.AddSingleton<NavigationBackService>();
+
                     services.AddSingleton<NavigationStore>();
                     services.AddSingleton(s => new MainWindow() {
                         DataContext = s.GetRequiredService<MainViewModel>()

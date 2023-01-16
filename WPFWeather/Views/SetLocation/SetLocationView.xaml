@@ -21,7 +21,11 @@
 					<RowDefinition Height="*"/>
 				</Grid.RowDefinitions>
 				<Grid Grid.Row="0">
-					<Button Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" Command="{Binding CancelCommand}" Style="{DynamicResource RoundBorder}" HorizontalAlignment="Right">
+					<Button 
+						Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" 
+						Command="{Binding CancelCommand}" 
+						Style="{DynamicResource RoundBorder}" 
+						HorizontalAlignment="Right">
 						<Viewbox>
 							<icons:PackIconMicrons Kind="Cancel" />
 						</Viewbox>

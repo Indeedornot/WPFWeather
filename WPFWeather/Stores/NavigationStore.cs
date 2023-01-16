@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using WPFWeather.ViewModels;
 
 namespace WPFWeather.Stores;
 
 public class NavigationStore {
+
     private ViewModelBase? _currentViewModel;
     public ViewModelBase? CurrentViewModel {
         get => _currentViewModel;
@@ -14,6 +16,9 @@ public class NavigationStore {
             OnCurrentViewModelChanged();
         }
     }
+
+    public Func<ViewModelBase>? CurrentViewModelCreator { get; set; }
+    public Stack<Func<ViewModelBase>> PreviousViewModelCreators { get; set; } = new();
 
     public event Action CurrentViewModelChanged;
 

@@ -14,6 +14,10 @@ public class NavigationService<TViewModel> where TViewModel : ViewModelBase {
     }
 
     public void Navigate() {
+        if (_navigationStore.CurrentViewModelCreator != null) {
+            _navigationStore.PreviousViewModelCreators.Push(_navigationStore.CurrentViewModelCreator);
+        }
+        _navigationStore.CurrentViewModelCreator = _createViewModel;
         _navigationStore.CurrentViewModel = _createViewModel();
     }
 }

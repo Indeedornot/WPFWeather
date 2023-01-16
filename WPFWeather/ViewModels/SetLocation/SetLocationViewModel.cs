@@ -31,13 +31,15 @@ public class SetLocationViewModel : ViewModelBase {
     private readonly NavigationService<WeatherHomeViewModel> _weatherHomeNavigationService;
 
     public ChooseLocationTypeCommand ChooseLocationTypeCommand { get; }
+    public NavigateBackCommand CancelCommand { get; }
 
-    public SetLocationViewModel(IWeatherProvider weatherProvider, AppStore appStore, NavigationService<WeatherHomeViewModel> weatherHomeNavigationService) {
+    public SetLocationViewModel(IWeatherProvider weatherProvider, AppStore appStore, NavigationService<WeatherHomeViewModel> weatherHomeNavigationService, NavigationBackService navigationBackService) {
         _weatherHomeNavigationService = weatherHomeNavigationService;
         _weatherProvider = weatherProvider;
         _appStore = appStore;
 
         ChooseLocationTypeCommand = new ChooseLocationTypeCommand(this);
+        CancelCommand = new NavigateBackCommand(navigationBackService);
 
         _locationType = "Address";
         _currentViewModel = new SetAddressViewModel(weatherProvider, appStore, weatherHomeNavigationService);
