@@ -18,7 +18,7 @@
 	</UserControl.Resources>
 	<Grid Background="{StaticResource BrushBgDefault}"
 		  d:DataContext="{d:DesignInstance vms:WeatherHomeViewModel}">
-		<Grid d:Visibility="Visible"  Visibility="{Binding HasError, Converter={StaticResource VisibilityConverter}}">
+		<Grid d:Visibility="Hidden"  Visibility="{Binding HasError, Converter={StaticResource VisibilityConverter}}">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="*"/>
 				<ColumnDefinition Width="2*"/>
@@ -31,48 +31,17 @@
 			</Grid.RowDefinitions>
 
 			<Grid Grid.Column="1" Grid.Row="1">
-				<Border
-                    Background="{StaticResource BrushBgSubtle}"
-                    CornerRadius="7" />
-
-				<Grid>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="*"/>
-					</Grid.RowDefinitions>
-					<Viewbox Grid.Row="1" Stretch="Uniform" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center">
-						<TextBlock d:Text="No internet connection"  Text="{Binding ErrorMessage}" Foreground="{StaticResource BrushFgEmphasis}"/>
-					</Viewbox>
-					<Grid Grid.Row="2" Margin="3"  HorizontalAlignment="Center" Width="{Binding ActualHeight, RelativeSource={RelativeSource Self},Converter={StaticResource MathConverter}, ConverterParameter=@VALUE*2}">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="*"/>
-							<RowDefinition Height="8*"/>
-							<RowDefinition Height="4*"/>
-						</Grid.RowDefinitions>
-						<Grid Grid.Row="1">
-							<Border
-							Background="{StaticResource BrushBgOverlay}"
-							CornerRadius="7" />
-
-							<Button BorderThickness="0" Background="Transparent" VerticalAlignment="Stretch"  Command="{Binding ReloadCommand}">
-								<Viewbox>
-									<TextBlock Text="Reload" Margin="4" Foreground="{StaticResource BrushFgDefault}"/>
-								</Viewbox>
-							</Button>
-						</Grid>
-					</Grid>
-
-				</Grid>
+				<control:ErrorDisplay 
+					ButtonCommand="{Binding ReloadCommand}" 
+					ErrorText="{Binding ErrorMessage}" 
+					ButtonText="Reload"
+				/>
 			</Grid>
 		</Grid>
-		<Grid d:Visibility="Hidden" Visibility="{Binding HasError, Converter={StaticResource InverseVisibilityConverter}}">
-			<Grid d:Visibility="Hidden" Visibility="{Binding IsLoading,Converter={StaticResource VisibilityConverter}}">
-				<Viewbox Stretch="Uniform" Margin="20">
-					<icons:PackIconUnicons Kind="Sync" Foreground="{StaticResource BrushFgIcon}"/>
-				</Viewbox>
-			</Grid>
-			<Grid d:Visibility="Visible" Visibility="{Binding IsLoading, Converter={StaticResource InverseVisibilityConverter}}">
+		<Grid d:Visibility="Visible" Visibility="{Binding HasError, Converter={StaticResource InverseVisibilityConverter}}" Style="{StaticResource Spinner}">
+			<control:LoadingSpinner d:Visibility="Visible" Margin="80" Visibility="{Binding IsLoading, Converter={StaticResource VisibilityConverter}}"/>
+
+			<Grid d:Visibility="Hidden" Visibility="{Binding IsLoading, Converter={StaticResource InverseVisibilityConverter}}">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="65*"></RowDefinition>
 					<RowDefinition Height="35*"></RowDefinition>
@@ -90,7 +59,13 @@
 							</Grid.ColumnDefinitions>
 
 							<Viewbox Grid.Column="0" Stretch="Uniform" >
-								<icons:PackIconUnicons Foreground="{StaticResource BrushFgIcon}" Kind="CloudWind" Padding="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+								<icons:PackIconUnicons 
+									Foreground="{StaticResource BrushFgIcon}" 
+									Kind="CloudWind" 
+									Padding="2" 
+									HorizontalAlignment="Stretch" 
+									VerticalAlignment="Stretch"
+								/>
 							</Viewbox>
 							<Grid Grid.Column="1" Margin="0 0 5 0">
 								<Grid.RowDefinitions>

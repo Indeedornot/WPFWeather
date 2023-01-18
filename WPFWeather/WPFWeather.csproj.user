@@ -2,7 +2,13 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
+    <Compile Update="UserControls\ErrorDisplay.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="UserControls\InfoCard.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="UserControls\LoadingSpinner.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="UserControls\WeatherCard.xaml.cs">
@@ -25,7 +31,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="UserControls\ErrorDisplay.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="UserControls\InfoCard.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\LoadingSpinner.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="UserControls\WeatherCard.xaml">

@@ -15,7 +15,7 @@ namespace WPFWeather.ViewModels;
 public class WeatherHomeViewModel : ViewModelBase {
     private readonly AppStore _appStore;
 
-    public ObservableCollection<WeatherData> Weather { get; set; }
+    public ObservableCollection<WeatherData> Weather { get; set; } = new();
 
     private string? _location;
     public string? Location {
@@ -67,9 +67,6 @@ public class WeatherHomeViewModel : ViewModelBase {
 
     public WeatherHomeViewModel(AppStore appStore, NavigationService<SetLocationViewModel> setLocationNavigationService) {
         _appStore = appStore;
-
-        _location = _appStore.Location?.ToString();
-        Weather = new();
 
         _appStore.LocationChanged += OnLocationUpdate;
         _appStore.WeatherForecastsChanged += OnWeatherUpdate;

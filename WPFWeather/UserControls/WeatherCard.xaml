@@ -5,8 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WPFWeather.UserControls"
              xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
-             mc:Ignorable="d"
+             xmlns:converters="clr-namespace:WPFWeather.Converters"
+			 mc:Ignorable="d"
 >
+	<UserControl.Resources>
+		<converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
+		<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+	</UserControl.Resources>
 	<Viewbox Stretch="Uniform"
 			 DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}" 
 			 d:DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:WeatherCard}}}"
@@ -20,9 +25,16 @@
 			<Border
                 Background="{StaticResource BrushBgOverlay}"
                 CornerRadius="7" />
-			<TextBlock Text="{Binding Time}" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-			<icons:PackIconRemixIcon Height="32" Kind="HeavyShowersFill" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
-			<TextBlock Text="{Binding Temperature, Mode=OneWay, StringFormat={}{0}°}" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+
+			<Grid d:Visibility="Hidden" Visibility="{Binding Loading, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+				<TextBlock Text="{Binding Time}" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+				<icons:PackIconRemixIcon Height="32" Kind="HeavyShowersFill" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+				<TextBlock Text="{Binding Temperature, Mode=OneWay, StringFormat={}{0}°}" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+			</Grid>
+
+			<Grid d:Visibility="Visible" Visibility="{Binding Loading, Converter={StaticResource BooleanToVisibilityConverter}}">
+				<local:LoadingSpinner Margin="5"/>
+			</Grid>
 		</Grid>
 	</Viewbox>
 </UserControl>
