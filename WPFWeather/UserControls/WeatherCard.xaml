@@ -26,13 +26,13 @@
                 Background="{StaticResource BrushBgOverlay}"
                 CornerRadius="7" />
 
-			<Grid d:Visibility="Hidden" Visibility="{Binding Loading, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+			<Grid d:Visibility="Visible" Visibility="{Binding Loading, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
 				<TextBlock Text="{Binding Time}" HorizontalAlignment="Center" VerticalAlignment="Top"/>
 				<icons:PackIconRemixIcon Height="32" Kind="HeavyShowersFill" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
 				<TextBlock Text="{Binding Temperature, Mode=OneWay, StringFormat={}{0}°}" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
 			</Grid>
 
-			<Grid d:Visibility="Visible" Visibility="{Binding Loading, Converter={StaticResource BooleanToVisibilityConverter}}">
+			<Grid d:Visibility="Hidden" Visibility="{Binding Loading, Converter={StaticResource BooleanToVisibilityConverter}}">
 				<local:LoadingSpinner Margin="5"/>
 			</Grid>
 		</Grid>
