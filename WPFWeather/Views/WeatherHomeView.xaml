@@ -1,122 +1,164 @@
-﻿<UserControl x:Class="WPFWeather.Views.WeatherHomeView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:WPFWeather.Views"
-             xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
-			 xmlns:control="clr-namespace:WPFWeather.UserControls"
-			 xmlns:converters="clr-namespace:WPFWeather.Converters"
-			 xmlns:vms="clr-namespace:WPFWeather.ViewModels"
-			 xmlns:models="clr-namespace:WPFWeather.Models"
-             mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="835">
+﻿<UserControl
+	x:Class="WPFWeather.Views.WeatherHomeView"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:control="clr-namespace:WPFWeather.UserControls"
+	xmlns:converters="clr-namespace:WPFWeather.Converters"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
+	xmlns:local="clr-namespace:WPFWeather.Views"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:models="clr-namespace:WPFWeather.Models"
+	xmlns:vms="clr-namespace:WPFWeather.ViewModels"
+	d:DesignHeight="450"
+	d:DesignWidth="835"
+	mc:Ignorable="d">
 	<UserControl.Resources>
-		<converters:MathConverter x:Key="MathConverter"/>
-		<converters:InverseBooleanToVisibilityConverter x:Key="InverseVisibilityConverter"/>
-		<BooleanToVisibilityConverter x:Key="VisibilityConverter"/>
+		<converters:MathConverter x:Key="MathConverter" />
+		<converters:InverseBooleanToVisibilityConverter x:Key="InverseVisibilityConverter" />
+		<BooleanToVisibilityConverter x:Key="VisibilityConverter" />
+		<converters:InvertBooleanConverter x:Key="InvertBooleanConverter" />
+		<converters:MultiBooleanToVisibilityConverter x:Key="MultiBooleanToVisibilityConverter" />
 	</UserControl.Resources>
-	<Grid Background="{StaticResource BrushBgDefault}"
-		  d:DataContext="{d:DesignInstance vms:WeatherHomeViewModel}">
-		<Grid d:Visibility="Hidden"  Visibility="{Binding HasError, Converter={StaticResource VisibilityConverter}}">
+
+	<Grid d:DataContext="{d:DesignInstance vms:WeatherHomeViewModel}" Background="{StaticResource BrushBgDefault}">
+		<Grid d:Visibility="Hidden" Visibility="{Binding HasError, Converter={StaticResource VisibilityConverter}}">
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="*"/>
-				<ColumnDefinition Width="2*"/>
-				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="2*" />
+				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
 			<Grid.RowDefinitions>
-				<RowDefinition Height="*"/>
-				<RowDefinition Height="2*"/>
-				<RowDefinition Height="*"/>
+				<RowDefinition Height="*" />
+				<RowDefinition Height="2*" />
+				<RowDefinition Height="*" />
 			</Grid.RowDefinitions>
 
-			<Grid Grid.Column="1" Grid.Row="1">
-				<control:ErrorDisplay 
-					ButtonCommand="{Binding ReloadCommand}" 
-					ErrorText="{Binding ErrorMessage}" 
+			<Grid Grid.Row="1" Grid.Column="1">
+				<control:ErrorDisplay
+					ButtonCommand="{Binding ReloadCommand}"
 					ButtonText="Reload"
-				/>
+					ErrorText="{Binding ErrorMessage}" />
 			</Grid>
 		</Grid>
-		<Grid d:Visibility="Visible" Visibility="{Binding HasError, Converter={StaticResource InverseVisibilityConverter}}" Style="{StaticResource Spinner}">
-			<control:LoadingSpinner d:Visibility="Visible" Margin="80" Visibility="{Binding IsLoading, Converter={StaticResource VisibilityConverter}}"/>
+		<control:LoadingSpinner Margin="80" d:Visibility="Hidden">
+			<control:LoadingSpinner.Visibility>
+				<MultiBinding Converter="{StaticResource MultiBooleanToVisibilityConverter}">
+					<Binding Path="IsLoading" />
+					<Binding Converter="{StaticResource InvertBooleanConverter}" Path="HasError" />
+				</MultiBinding>
+			</control:LoadingSpinner.Visibility>
+		</control:LoadingSpinner>
 
-			<Grid d:Visibility="Hidden" Visibility="{Binding IsLoading, Converter={StaticResource InverseVisibilityConverter}}">
+		<Grid d:Visibility="Visible">
+			<Grid.Visibility>
+				<MultiBinding Converter="{StaticResource MultiBooleanToVisibilityConverter}">
+					<Binding Converter="{StaticResource InvertBooleanConverter}" Path="IsLoading" />
+					<Binding Converter="{StaticResource InvertBooleanConverter}" Path="HasError" />
+				</MultiBinding>
+			</Grid.Visibility>
+			<Grid>
 				<Grid.RowDefinitions>
-					<RowDefinition Height="65*"></RowDefinition>
-					<RowDefinition Height="35*"></RowDefinition>
+					<RowDefinition Height="65*" />
+					<RowDefinition Height="35*" />
 				</Grid.RowDefinitions>
 				<Grid Row="0">
-					<Grid Margin="16 16 16 8">
-						<Border
-                    Background="{StaticResource BrushBgSubtle}"
-                    CornerRadius="7" />
+					<Grid Margin="16,16,16,8">
+						<Border Background="{StaticResource BrushBgSubtle}" CornerRadius="7" />
 
 						<Grid>
 							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto"/>
-								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
 							</Grid.ColumnDefinitions>
 
-							<Viewbox Grid.Column="0" Stretch="Uniform" >
-								<icons:PackIconUnicons 
-									Foreground="{StaticResource BrushFgIcon}" 
-									Kind="CloudWind" 
-									Padding="2" 
-									HorizontalAlignment="Stretch" 
+							<Button
+								Background="{StaticResource BrushBgHover}"
+								Click="SayHello"
+								DataContext="{Binding RelativeSource={RelativeSource AncestorType=local:WeatherHomeView}}">
+								<TextBlock Text="{Binding Message}" />
+							</Button>
+
+							<Viewbox Grid.Column="0" Stretch="Uniform">
+								<icons:PackIconUnicons
+									Padding="2"
+									HorizontalAlignment="Stretch"
 									VerticalAlignment="Stretch"
-								/>
+									Foreground="{StaticResource BrushFgIcon}"
+									Kind="CloudWind" />
 							</Viewbox>
-							<Grid Grid.Column="1" Margin="0 0 5 0">
+							<Grid Grid.Column="1" Margin="0,0,5,0">
 								<Grid.RowDefinitions>
-									<RowDefinition Height="*"/>
-									<RowDefinition Height="*"/>
+									<RowDefinition Height="*" />
+									<RowDefinition Height="*" />
 								</Grid.RowDefinitions>
 
-								<Button Foreground="{StaticResource BrushFgMuted}" 
-										HorizontalAlignment="Right" VerticalAlignment="Top" 
-										Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" Background="Transparent" BorderThickness="0" 
-										Command="{Binding ReloadCommand}" 
-										Margin="0 12 9 0"
-										Style="{DynamicResource RoundBorder}"
-										Padding="4"
-								>
+								<Button
+									Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+									Margin="0,12,9,0"
+									Padding="4"
+									HorizontalAlignment="Right"
+									VerticalAlignment="Top"
+									Background="Transparent"
+									BorderThickness="0"
+									Command="{Binding ReloadCommand}"
+									Foreground="{StaticResource BrushFgMuted}"
+									Style="{DynamicResource RoundBorder}">
 									<icons:PackIconUnicons Kind="Sync" />
 								</Button>
 								<Grid Grid.Row="0">
 									<Grid.RowDefinitions>
-										<RowDefinition Height="*"/>
-										<RowDefinition Height="3*"/>
+										<RowDefinition Height="*" />
+										<RowDefinition Height="3*" />
 									</Grid.RowDefinitions>
-									<Viewbox HorizontalAlignment="Left" Stretch="Uniform" Grid.Row="1">
+									<Viewbox
+										Grid.Row="1"
+										HorizontalAlignment="Left"
+										Stretch="Uniform">
 										<DockPanel>
-											<TextBlock FontSize="20" d:Text="15°" Text="{Binding SelectedWeather.Temperature, StringFormat={}{0}°}" Foreground="{StaticResource BrushFgDefault}"/>
-											<Button 
-												Command="{Binding SetLocationCommand}"
-												FontSize="15" 
-												Margin="3 0 0 1" 
-												Foreground="{StaticResource BrushFgMuted}"
-												Background="Transparent" BorderThickness="0"
-												Style="{DynamicResource RoundBorder}"
-												VerticalAlignment="Bottom" 
+											<TextBlock
+												d:Text="15°"
+												FontSize="20"
+												Foreground="{StaticResource BrushFgDefault}"
+												Text="{Binding SelectedWeather.Temperature, StringFormat={}{0}°}" />
+											<Button
+												Margin="3,0,0,1"
 												HorizontalAlignment="Right"
-											>
-												<TextBlock Text="{Binding Location}"/>
+												VerticalAlignment="Bottom"
+												Background="Transparent"
+												BorderThickness="0"
+												Command="{Binding SetLocationCommand}"
+												FontSize="15"
+												Foreground="{StaticResource BrushFgMuted}"
+												Style="{DynamicResource RoundBorder}">
+												<TextBlock Text="{Binding Location}" />
 											</Button>
 										</DockPanel>
 									</Viewbox>
 								</Grid>
 								<Grid Grid.Row="1">
-									<Viewbox HorizontalAlignment="Left" Margin="0 5 0 5">
+									<Viewbox Margin="0,5,0,5" HorizontalAlignment="Left">
 										<Viewbox.Resources>
 											<Style TargetType="{x:Type control:InfoCard}">
-												<Setter Property="Margin" Value="7 0"/>
+												<Setter Property="Margin" Value="7,0" />
 											</Style>
 										</Viewbox.Resources>
 										<StackPanel Orientation="Horizontal">
-											<control:InfoCard Grid.Column="0" Info="Cloudiness" d:Text="15%" Text="{Binding SelectedWeather.Cloudiness, StringFormat={}{0}%}"/>
-											<control:InfoCard Grid.Column="1" Info="Humidity" d:Text="94%" Text="{Binding SelectedWeather.Humidity, StringFormat={}{0}%}"/>
-											<control:InfoCard Grid.Column="2" Info="Pressure" d:Text="1015hPa"  Text="{Binding SelectedWeather.Pressure, StringFormat={}{0}hPa}"/>
+											<control:InfoCard
+												Grid.Column="0"
+												d:Text="15%"
+												Info="Cloudiness"
+												Text="{Binding SelectedWeather.Cloudiness, StringFormat={}{0}%}" />
+											<control:InfoCard
+												Grid.Column="1"
+												d:Text="94%"
+												Info="Humidity"
+												Text="{Binding SelectedWeather.Humidity, StringFormat={}{0}%}" />
+											<control:InfoCard
+												Grid.Column="2"
+												d:Text="1015hPa"
+												Info="Pressure"
+												Text="{Binding SelectedWeather.Pressure, StringFormat={}{0}hPa}" />
 										</StackPanel>
 									</Viewbox>
 								</Grid>
@@ -124,38 +166,59 @@
 						</Grid>
 					</Grid>
 				</Grid>
-				<Grid Row="1">
-					<ListView Background="Transparent" 
+				<Grid Margin="16,0" Row="1">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="auto" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="auto" />
+					</Grid.ColumnDefinitions>
+
+					<Grid.RowDefinitions>
+						<RowDefinition Height="*" />
+						<RowDefinition Height="*" />
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions>
+
+					<Viewbox Grid.Row="1" Grid.Column="0">
+						<icons:PackIconUnicons VerticalAlignment="Center" Kind="AngleLeftB" />
+					</Viewbox>
+
+					<ListView
+						Grid.RowSpan="3"
+						Grid.Column="1"
 						HorizontalContentAlignment="Stretch"
 						VerticalContentAlignment="Stretch"
-						ItemsSource="{Binding Weather}"
+						Background="Transparent"
 						BorderThickness="0"
-						Margin="16 0"
-						SelectedItem="{Binding SelectedWeather}"
-					 >
+						ItemsSource="{Binding Weather}"
+						SelectedItem="{Binding SelectedWeather}">
 						<ListView.ItemsPanel>
 							<ItemsPanelTemplate>
-								<StackPanel Orientation="Horizontal" Background="Transparent"/>
+								<StackPanel Background="Transparent" Orientation="Horizontal" />
 							</ItemsPanelTemplate>
 						</ListView.ItemsPanel>
 						<ListView.ItemTemplate>
 							<DataTemplate DataType="models:WeatherData">
-								<control:WeatherCard MinWidth="{Binding ActualHeight, RelativeSource={RelativeSource Self},Converter={StaticResource MathConverter},ConverterParameter=(@VALUE/7*4)}" 
-											 HorizontalAlignment="Stretch" 
-											 VerticalAlignment="Stretch"
-											 d:Time="12:00"
-											 Time="{Binding Time, StringFormat={}{0:HH:mm}}" 
-											 d:Temperature="15"
-											 Temperature="{Binding Temperature}"/>
+								<control:WeatherCard
+									MinWidth="{Binding ActualHeight, RelativeSource={RelativeSource Self}, Converter={StaticResource MathConverter}, ConverterParameter=(@VALUE/7*4)}"
+									HorizontalAlignment="Stretch"
+									VerticalAlignment="Stretch"
+									d:Temperature="15"
+									d:Time="12:00"
+									Temperature="{Binding Temperature}"
+									Time="{Binding Time, StringFormat={}{0:HH:mm}}" />
 							</DataTemplate>
 						</ListView.ItemTemplate>
 
-						<d:ListItem/>
-						<d:ListItem/>
-						<d:ListItem/>
-						<d:ListItem/>
-						<d:ListItem/>
+						<d:ListItem />
+						<d:ListItem />
+						<d:ListItem />
+						<d:ListItem />
+						<d:ListItem />
 					</ListView>
+					<Viewbox Grid.Row="1" Grid.Column="2">
+						<icons:PackIconUnicons VerticalAlignment="Center" Kind="AngleRightB" />
+					</Viewbox>
 				</Grid>
 			</Grid>
 		</Grid>

@@ -13,15 +13,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace WPFWeather.UserControls
-{
+namespace WPFWeather.UserControls {
     /// <summary>
     /// Interaction logic for LoadingSpinner.xaml
     /// </summary>
-    public partial class LoadingSpinner : UserControl
-    {
-        public LoadingSpinner()
-        {
+    public partial class LoadingSpinner : UserControl {
+        public LoadingSpinner() {
             InitializeComponent();
         }
     }
