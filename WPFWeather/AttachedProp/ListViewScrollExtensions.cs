@@ -8,55 +8,101 @@ namespace WPFWeather.AttachedProp;
 //https://stackoverflow.com/a/34284262/11262883
 //Bug: Double registers events
 public class ListViewScrollExtensions {
-    #region ScrollHitMaxCommand
-    public static readonly DependencyProperty ScrollHitMaxCommandProperty =
+    #region ScrollHitXMaxCommand
+    public static readonly DependencyProperty ScrollHitXMaxCommandProperty =
         DependencyProperty.RegisterAttached(
-            "ScrollHitMaxCommand",
+            "ScrollHitXMaxCommand",
             typeof(ICommand),
             typeof(ListViewScrollExtensions),
             new PropertyMetadata(default(ICommand),
             OnScrollChangedCommandChanged));
 
-    public static void SetScrollHitMaxCommand(DependencyObject element, ICommand value) {
-        element.SetValue(ScrollHitMaxCommandProperty, value);
+    public static void SetScrollHitXMaxCommand(DependencyObject element, ICommand value) {
+        element.SetValue(ScrollHitXMaxCommandProperty, value);
     }
-    public static ICommand GetScrollHitMaxCommand(DependencyObject element) {
-        return (ICommand)element.GetValue(ScrollHitMaxCommandProperty);
+    public static ICommand GetScrollHitXMaxCommand(DependencyObject element) {
+        return (ICommand)element.GetValue(ScrollHitXMaxCommandProperty);
     }
     #endregion
-    #region ScrollHitMinCommand
-    public static readonly DependencyProperty ScrollHitMinCommandProperty =
+    #region ScrollHitXMinCommand
+    public static readonly DependencyProperty ScrollHitXMinCommandProperty =
         DependencyProperty.RegisterAttached(
-            "ScrollHitMinCommand",
+            "ScrollHitXMinCommand",
             typeof(ICommand),
             typeof(ListViewScrollExtensions),
             new PropertyMetadata(default(ICommand),
             OnScrollChangedCommandChanged));
 
-    public static void SetScrollHitMinCommand(DependencyObject element, ICommand value) {
-        element.SetValue(ScrollHitMinCommandProperty, value);
+    public static void SetScrollHitXMinCommand(DependencyObject element, ICommand value) {
+        element.SetValue(ScrollHitXMinCommandProperty, value);
     }
-    public static ICommand GetScrollHitMinCommand(DependencyObject element) {
-        return (ICommand)element.GetValue(ScrollHitMinCommandProperty);
+    public static ICommand GetScrollHitXMinCommand(DependencyObject element) {
+        return (ICommand)element.GetValue(ScrollHitXMinCommandProperty);
+    }
+    #endregion
+    #region ScrollHitYMaxCommand
+    public static readonly DependencyProperty ScrollHitYMaxCommandProperty =
+        DependencyProperty.RegisterAttached(
+            "ScrollHitYMaxCommand",
+            typeof(ICommand),
+            typeof(ListViewScrollExtensions),
+            new PropertyMetadata(default(ICommand),
+            OnScrollChangedCommandChanged));
+
+    public static void SetScrollHitYMaxCommand(DependencyObject element, ICommand value) {
+        element.SetValue(ScrollHitYMaxCommandProperty, value);
+    }
+    public static ICommand GetScrollHitYMaxCommand(DependencyObject element) {
+        return (ICommand)element.GetValue(ScrollHitYMaxCommandProperty);
+    }
+    #endregion
+    #region ScrollHitYMinCommand
+    public static readonly DependencyProperty ScrollHitYMinCommandProperty =
+        DependencyProperty.RegisterAttached(
+            "ScrollHitYMinCommand",
+            typeof(ICommand),
+            typeof(ListViewScrollExtensions),
+            new PropertyMetadata(default(ICommand),
+            OnScrollChangedCommandChanged));
+
+    public static void SetScrollHitYMinCommand(DependencyObject element, ICommand value) {
+        element.SetValue(ScrollHitYMinCommandProperty, value);
+    }
+    public static ICommand GetScrollHitYMinCommand(DependencyObject element) {
+        return (ICommand)element.GetValue(ScrollHitYMinCommandProperty);
     }
     #endregion
 
-
+    //Commands changed (and whether we need to listen for reloads)
+    private static int _commandsRegistered = 0;
     private static void OnScrollChangedCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
         ListView? listView = d as ListView;
         if (listView == null) return;
 
-        if (e.NewValue != null) {
+        int oldCommandCount = _commandsRegistered;
+
+        //command added
+        if (e.NewValue != null && e.OldValue == null) {
+            _commandsRegistered += 1;
+        }
+        //command removed
+        else if (e.NewValue == null && e.OldValue != null) {
+            _commandsRegistered -= 1;
+        }
+
+        //first new command added
+        if (_commandsRegistered > 0 && oldCommandCount == 0) {
             listView.Loaded += ListViewOnLoaded;
             return;
         }
-
-        if (e.OldValue != null) {
+        //all commands removed
+        else if (_commandsRegistered == 0 && oldCommandCount > 0) {
             listView.Loaded -= ListViewOnLoaded;
             return;
         }
     }
 
+    //ListView (re)loaded
     private static void ListViewOnLoaded(object sender, RoutedEventArgs routedEventArgs) {
         ListView? listView = sender as ListView;
         if (listView == null) return;
@@ -67,6 +113,7 @@ public class ListViewScrollExtensions {
         scrollViewer.ScrollChanged += ScrollViewerOnScrollChanged;
     }
 
+    //Handle scroll changed
     private static void ScrollViewerOnScrollChanged(object sender, ScrollChangedEventArgs e) {
         var scrollViewer = sender as ScrollViewer;
         if (scrollViewer == null) return;
@@ -79,30 +126,33 @@ public class ListViewScrollExtensions {
     }
 
     private static void HandleScrollChanged(ListView listView, ScrollChangedEventArgs e) {
-        ICommand MaxHitCommand = GetScrollHitMaxCommand(listView);
-        ICommand MinHitCommand = GetScrollHitMinCommand(listView);
+        ICommand MaxXHitCommand = GetScrollHitXMaxCommand(listView);
+        ICommand MinXHitCommand = GetScrollHitXMinCommand(listView);
+
+        ICommand MaxYHitCommand = GetScrollHitYMaxCommand(listView);
+        ICommand MinYHitCommand = GetScrollHitYMinCommand(listView);
 
         // && e.VerticalChange == 0
-        if (e.HorizontalChange == 0) return;
+        if (e.HorizontalChange == 0 && e.VerticalChange == 0) return;
 
-        if (e.HorizontalOffset == 0) {
-            MinHitCommand.Execute(e);
-            return;
+        if (e.HorizontalChange != 0) {
+            if (e.HorizontalOffset == 0) {
+                MinXHitCommand.Execute(e);
+            }
+
+            if (e.HorizontalOffset == e.ExtentWidth - e.ViewportWidth) {
+                MaxXHitCommand.Execute(e);
+            }
         }
 
-        if (e.HorizontalOffset == e.ExtentWidth - e.ViewportWidth) {
-            MaxHitCommand.Execute(e);
-            return;
+        if (e.VerticalChange != 0) {
+            if (e.VerticalOffset == 0) {
+                MinYHitCommand.Execute(e);
+            }
+
+            if (e.VerticalOffset == e.ExtentHeight - e.ViewportHeight) {
+                MaxYHitCommand.Execute(e);
+            }
         }
-
-
-        //if (e.VerticalChange != 0) {
-        //    if (e.VerticalOffset == 0) {
-        //        MinHitCommand.Execute(e);
-        //    }
-        //    else if (e.VerticalOffset == e.ViewportHeight - e.ExtentHeight) {
-        //        MaxHitCommand.Execute(e);
-        //    }
-        //}
     }
 }
