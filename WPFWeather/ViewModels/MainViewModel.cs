@@ -1,4 +1,5 @@
-﻿using WPFWeather.Stores;
+﻿
+using WPFWeather.Stores;
 
 namespace WPFWeather.ViewModels;
 public class MainViewModel : ViewModelBase {

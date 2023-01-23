@@ -2,6 +2,7 @@
 
 using WPFWeather.Commands;
 using WPFWeather.Models.LocationInfo;
+using WPFWeather.Services.LocationProvider;
 using WPFWeather.Services.NavigationService;
 using WPFWeather.Services.WeatherProvider;
 using WPFWeather.Stores;
@@ -36,14 +37,14 @@ internal class SetZipCodeViewModel : ViewModelBase, IViewModelSetLocation {
     }
 
     public async Task<Location?> GetLocation() {
-        return await _weatherProvider.GetLocationByZipCode(new ZipCode(ZipCode, CountryCode));
+        return await _locationProvider.GetLocationByZipCodeAsync(new ZipCode(ZipCode, CountryCode));
     }
 
     public SetLocationCommand SumbitCommand { get; }
 
-    private readonly IWeatherProvider _weatherProvider;
-    public SetZipCodeViewModel(IWeatherProvider weatherProvider, AppStore appStore, NavigationService<WeatherHomeViewModel> weatherHomeNavigationService) {
-        _weatherProvider = weatherProvider;
+    private readonly ILocationProvider _locationProvider;
+    public SetZipCodeViewModel(ILocationProvider locationProvider, AppStore appStore, NavigationService<WeatherHomeViewModel> weatherHomeNavigationService) {
+        _locationProvider = locationProvider;
         SumbitCommand = new SetLocationCommand(this, appStore, weatherHomeNavigationService);
     }
 }

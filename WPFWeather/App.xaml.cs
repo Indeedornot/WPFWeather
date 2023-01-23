@@ -8,6 +8,7 @@ using System.Windows;
 using WPFWeather.HostBuilder;
 using WPFWeather.Models;
 using WPFWeather.Services.DataProvider;
+using WPFWeather.Services.LocationProvider;
 using WPFWeather.Services.NavigationService;
 using WPFWeather.Services.Provider;
 using WPFWeather.Services.WeatherProvider;
@@ -29,7 +30,8 @@ namespace WPFWeather {
                     if (WeatherApiKey == null) {
                         throw new MissingMemberException(nameof(WeatherApiKey), "Weather Api Key not found");
                     }
-                    services.AddSingleton<IWeatherProvider, OpenWeatherService>((s) => new OpenWeatherService(WeatherApiKey));
+                    services.AddSingleton<IWeatherProvider, MeteoWeatherProvider>();
+                    services.AddSingleton<ILocationProvider, GeocodeLocationProvider>();
 
                     IPersistentDataManager persistentDataManager = new JsonPersistentDataManager();
                     services.AddSingleton(persistentDataManager);

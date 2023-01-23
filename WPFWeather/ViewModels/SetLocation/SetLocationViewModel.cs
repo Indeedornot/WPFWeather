@@ -1,6 +1,7 @@
 ﻿using System;
 
 using WPFWeather.Commands;
+using WPFWeather.Services.LocationProvider;
 using WPFWeather.Services.NavigationService;
 using WPFWeather.Services.WeatherProvider;
 using WPFWeather.Stores;
@@ -27,22 +28,22 @@ public class SetLocationViewModel : ViewModelBase {
     }
 
     private readonly AppStore _appStore;
-    private readonly IWeatherProvider _weatherProvider;
+    private readonly ILocationProvider _locationProvider;
     private readonly NavigationService<WeatherHomeViewModel> _weatherHomeNavigationService;
 
     public ChooseLocationTypeCommand ChooseLocationTypeCommand { get; }
     public NavigateBackCommand CancelCommand { get; }
 
-    public SetLocationViewModel(IWeatherProvider weatherProvider, AppStore appStore, NavigationService<WeatherHomeViewModel> weatherHomeNavigationService, NavigationBackService navigationBackService) {
+    public SetLocationViewModel(ILocationProvider locationProvider, AppStore appStore, NavigationService<WeatherHomeViewModel> weatherHomeNavigationService, NavigationBackService navigationBackService) {
         _weatherHomeNavigationService = weatherHomeNavigationService;
-        _weatherProvider = weatherProvider;
+        _locationProvider = locationProvider;
         _appStore = appStore;
 
         ChooseLocationTypeCommand = new ChooseLocationTypeCommand(this);
         CancelCommand = new NavigateBackCommand(navigationBackService);
 
         _locationType = "Address";
-        _currentViewModel = new SetAddressViewModel(weatherProvider, appStore, weatherHomeNavigationService);
+        _currentViewModel = new SetAddressViewModel(locationProvider, appStore, weatherHomeNavigationService);
     }
 
     //For more models I'd go with a DI factory methods
@@ -55,10 +56,10 @@ public class SetLocationViewModel : ViewModelBase {
     }
 
     private SetAddressViewModel createSetAddressVM() {
-        return new SetAddressViewModel(_weatherProvider, _appStore, _weatherHomeNavigationService);
+        return new SetAddressViewModel(_locationProvider, _appStore, _weatherHomeNavigationService);
     }
 
     private SetZipCodeViewModel createSetZipCodeVM() {
-        return new SetZipCodeViewModel(_weatherProvider, _appStore, _weatherHomeNavigationService);
+        return new SetZipCodeViewModel(_locationProvider, _appStore, _weatherHomeNavigationService);
     }
 }

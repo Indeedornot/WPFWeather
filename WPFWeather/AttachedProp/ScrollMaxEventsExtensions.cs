@@ -7,13 +7,13 @@ namespace WPFWeather.AttachedProp;
 
 //https://stackoverflow.com/a/34284262/11262883
 //Bug: Double registers events
-public class ListViewScrollExtensions {
+public class ScrollMaxEventsExtensions {
     #region ScrollHitXMaxCommand
     public static readonly DependencyProperty ScrollHitXMaxCommandProperty =
         DependencyProperty.RegisterAttached(
             "ScrollHitXMaxCommand",
             typeof(ICommand),
-            typeof(ListViewScrollExtensions),
+            typeof(ScrollMaxEventsExtensions),
             new PropertyMetadata(default(ICommand),
             OnScrollChangedCommandChanged));
 
@@ -29,7 +29,7 @@ public class ListViewScrollExtensions {
         DependencyProperty.RegisterAttached(
             "ScrollHitXMinCommand",
             typeof(ICommand),
-            typeof(ListViewScrollExtensions),
+            typeof(ScrollMaxEventsExtensions),
             new PropertyMetadata(default(ICommand),
             OnScrollChangedCommandChanged));
 
@@ -45,7 +45,7 @@ public class ListViewScrollExtensions {
         DependencyProperty.RegisterAttached(
             "ScrollHitYMaxCommand",
             typeof(ICommand),
-            typeof(ListViewScrollExtensions),
+            typeof(ScrollMaxEventsExtensions),
             new PropertyMetadata(default(ICommand),
             OnScrollChangedCommandChanged));
 
@@ -61,7 +61,7 @@ public class ListViewScrollExtensions {
         DependencyProperty.RegisterAttached(
             "ScrollHitYMinCommand",
             typeof(ICommand),
-            typeof(ListViewScrollExtensions),
+            typeof(ScrollMaxEventsExtensions),
             new PropertyMetadata(default(ICommand),
             OnScrollChangedCommandChanged));
 
@@ -76,8 +76,8 @@ public class ListViewScrollExtensions {
     //Commands changed (and whether we need to listen for reloads)
     private static int _commandsRegistered = 0;
     private static void OnScrollChangedCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-        ListView? listView = d as ListView;
-        if (listView == null) return;
+        ItemsControl? itemsControl = d as ItemsControl;
+        if (itemsControl == null) return;
 
         int oldCommandCount = _commandsRegistered;
 
@@ -92,22 +92,22 @@ public class ListViewScrollExtensions {
 
         //first new command added
         if (_commandsRegistered > 0 && oldCommandCount == 0) {
-            listView.Loaded += ListViewOnLoaded;
+            itemsControl.Loaded += ListViewOnLoaded;
             return;
         }
         //all commands removed
         else if (_commandsRegistered == 0 && oldCommandCount > 0) {
-            listView.Loaded -= ListViewOnLoaded;
+            itemsControl.Loaded -= ListViewOnLoaded;
             return;
         }
     }
 
     //ListView (re)loaded
     private static void ListViewOnLoaded(object sender, RoutedEventArgs routedEventArgs) {
-        ListView? listView = sender as ListView;
-        if (listView == null) return;
+        ItemsControl? itemsControl = sender as ItemsControl;
+        if (itemsControl == null) return;
 
-        ScrollViewer? scrollViewer = UIHelper.FindChildren<ScrollViewer>(listView).FirstOrDefault();
+        ScrollViewer? scrollViewer = UIHelper.FindChildren<ScrollViewer>(itemsControl).FirstOrDefault();
         if (scrollViewer == null) return;
 
         scrollViewer.ScrollChanged += ScrollViewerOnScrollChanged;
@@ -118,19 +118,18 @@ public class ListViewScrollExtensions {
         var scrollViewer = sender as ScrollViewer;
         if (scrollViewer == null) return;
 
-        ListView? listView = UIHelper.FindParent<ListView>(scrollViewer);
-        if (listView == null) return;
+        ItemsControl? itemsControl = UIHelper.FindParent<ItemsControl>(scrollViewer);
+        if (itemsControl == null) return;
 
-        HandleScrollChanged(listView, e);
-        //command.Execute(e);
+        HandleScrollChanged(itemsControl, e);
     }
 
-    private static void HandleScrollChanged(ListView listView, ScrollChangedEventArgs e) {
-        ICommand MaxXHitCommand = GetScrollHitXMaxCommand(listView);
-        ICommand MinXHitCommand = GetScrollHitXMinCommand(listView);
+    private static void HandleScrollChanged(ItemsControl itemsControl, ScrollChangedEventArgs e) {
+        ICommand MaxXHitCommand = GetScrollHitXMaxCommand(itemsControl);
+        ICommand MinXHitCommand = GetScrollHitXMinCommand(itemsControl);
 
-        ICommand MaxYHitCommand = GetScrollHitYMaxCommand(listView);
-        ICommand MinYHitCommand = GetScrollHitYMinCommand(listView);
+        ICommand MaxYHitCommand = GetScrollHitYMaxCommand(itemsControl);
+        ICommand MinYHitCommand = GetScrollHitYMinCommand(itemsControl);
 
         // && e.VerticalChange == 0
         if (e.HorizontalChange == 0 && e.VerticalChange == 0) return;

@@ -2,6 +2,7 @@
 
 using WPFWeather.Commands;
 using WPFWeather.Models.LocationInfo;
+using WPFWeather.Services.LocationProvider;
 using WPFWeather.Services.NavigationService;
 using WPFWeather.Services.WeatherProvider;
 using WPFWeather.Stores;
@@ -28,13 +29,13 @@ public class SetAddressViewModel : ViewModelBase, IViewModelSetLocation {
 
     public SetLocationCommand SumbitCommand { get; }
 
-    private readonly IWeatherProvider _weatherProvider;
-    public SetAddressViewModel(IWeatherProvider weatherProvider, AppStore appStore, NavigationService<WeatherHomeViewModel> weatherHomeNavigationService) {
-        _weatherProvider = weatherProvider;
+    private readonly ILocationProvider _locationProvider;
+    public SetAddressViewModel(ILocationProvider locationProvider, AppStore appStore, NavigationService<WeatherHomeViewModel> weatherHomeNavigationService) {
+        _locationProvider = locationProvider;
         SumbitCommand = new SetLocationCommand(this, appStore, weatherHomeNavigationService);
     }
 
     public async Task<Location?> GetLocation() {
-        return await _weatherProvider.GetLocationByAddress(new Address(CityName));
+        return await _locationProvider.GetLocationByAddressAsync(new Address(CityName));
     }
 }

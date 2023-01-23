@@ -62,7 +62,9 @@ public class WeatherHomeViewModel : ViewModelBase {
         }
     }
 
-    public LoadWeatherCommand ReloadCommand { get; }
+    public ReloadWeatherCommand ReloadCommand { get; }
+    public RelayCommand FetchFutureWeatherCommand { get; }
+    public RelayCommand FetchPastWeatherCommand { get; }
     public NavigateCommand<SetLocationViewModel> SetLocationCommand { get; }
 
     public WeatherHomeViewModel(AppStore appStore, NavigationService<SetLocationViewModel> setLocationNavigationService) {
@@ -74,8 +76,10 @@ public class WeatherHomeViewModel : ViewModelBase {
 
         EnsureDataLoaded();
 
-        ReloadCommand = new LoadWeatherCommand(_appStore);
+        ReloadCommand = new ReloadWeatherCommand(_appStore);
         SetLocationCommand = new NavigateCommand<SetLocationViewModel>(setLocationNavigationService);
+        FetchFutureWeatherCommand = new RelayCommand((_) => _appStore.FetchFutureWeather());
+        FetchPastWeatherCommand = new RelayCommand((_) => _appStore.FetchPastWeather());
     }
 
     public async Task EnsureDataLoaded() {
