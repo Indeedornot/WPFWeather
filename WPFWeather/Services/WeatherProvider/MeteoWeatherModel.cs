@@ -10,23 +10,6 @@ using System.Threading.Tasks;
 
 namespace WPFWeather.Services.WeatherProvider;
 
-public class CurrentWeather {
-    [JsonPropertyName("temperature")]
-    public double Temperature { get; set; }
-
-    [JsonPropertyName("windspeed")]
-    public double Windspeed { get; set; }
-
-    [JsonPropertyName("winddirection")]
-    public double Winddirection { get; set; }
-
-    [JsonPropertyName("weathercode")]
-    public int Weathercode { get; set; }
-
-    [JsonPropertyName("time")]
-    public string Time { get; set; }
-}
-
 public class Hourly {
     [JsonPropertyName("time")]
     public List<string> Time { get; set; }
@@ -36,12 +19,6 @@ public class Hourly {
 
     [JsonPropertyName("relativehumidity_2m")]
     public List<int> Relativehumidity { get; set; }
-
-    //[JsonPropertyName("apparent_temperature")]
-    //public List<double> ApparentTemperature { get; set; }
-
-    //[JsonPropertyName("precipitation")]
-    //public List<double> Precipitation { get; set; }
 
     [JsonPropertyName("rain")]
     public List<double> Rain { get; set; }
@@ -57,6 +34,9 @@ public class Hourly {
 
     [JsonPropertyName("windspeed_10m")]
     public List<double> Windspeed { get; set; }
+
+    [JsonPropertyName("weathercode")]
+    public List<int> Weathercode { get; set; }
 }
 
 //public class HourlyUnits {

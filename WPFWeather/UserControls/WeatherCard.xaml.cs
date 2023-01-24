@@ -1,5 +1,7 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Controls;
+
+using WPFWeather.Models;
 
 namespace WPFWeather.UserControls;
 
@@ -37,6 +39,15 @@ public partial class WeatherCard : UserControl {
     // Using a DependencyProperty as the backing store for Loading.  This enables animation, styling, binding, etc...
     public static readonly DependencyProperty LoadingProperty =
         DependencyProperty.Register(nameof(Loading), typeof(bool), typeof(WeatherCard), new PropertyMetadata(default(bool)));
+
+    public WeatherType Description {
+        get => (WeatherType)GetValue(DescriptionProperty);
+        set => SetValue(DescriptionProperty, value);
+    }
+
+    // Using a DependencyProperty as the backing store for WeatherType.  This enables animation, styling, binding, etc...
+    public static readonly DependencyProperty DescriptionProperty =
+        DependencyProperty.Register(nameof(Description), typeof(WeatherType), typeof(WeatherCard), new PropertyMetadata(WeatherType.Clear));
 
 
 }

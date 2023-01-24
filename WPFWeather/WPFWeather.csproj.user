@@ -14,6 +14,9 @@
     <Compile Update="UserControls\WeatherCard.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="UserControls\WeatherIconDisplay.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\SetLocation\SetAddressView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -41,6 +44,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="UserControls\WeatherCard.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UserControls\WeatherIconDisplay.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\SetLocation\SetAddressView.xaml">

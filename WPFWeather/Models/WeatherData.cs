@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace WPFWeather.Models;
 
@@ -7,14 +8,15 @@ public class WeatherData {
     public double Pressure { get; internal set; }
     public double Humidity { get; internal set; }
     public double WindSpeed { get; internal set; }
-    public double Cloudiness { get; internal set; }
+    public double CloudPercentage { get; internal set; }
     public double Rain { get; internal set; }
     public double Snowfall { get; internal set; }
     public DateTime Time { get; internal set; }
+    public WeatherType Description { get; internal set; }
 
     public override bool Equals(object? obj) {
         return obj is WeatherData data &&
-            data.Cloudiness == Cloudiness &&
+            data.CloudPercentage == CloudPercentage &&
             data.Humidity == Humidity &&
             data.Pressure == Pressure &&
             data.Rain == Rain &&
@@ -36,6 +38,16 @@ public class WeatherData {
     }
 
     public override int GetHashCode() {
-        return HashCode.Combine(Temperature, Pressure, Humidity, WindSpeed, Cloudiness, Rain, Snowfall, Time);
+        return HashCode.Combine(Temperature, Pressure, Humidity, WindSpeed, CloudPercentage, Rain, Snowfall, Time);
     }
+}
+
+public enum WeatherType {
+    Clear,
+    PartlyCloudy,
+    Fog,
+    Drizzle,
+    Rain,
+    Snowfall,
+    Thunderstorm
 }
