@@ -9,7 +9,7 @@
 	xmlns:viewsSL="clr-namespace:WPFWeather.Views.SetLocation"
 	xmlns:vms="clr-namespace:WPFWeather.ViewModels"
 	xmlns:vmsSL="clr-namespace:WPFWeather.ViewModels.SetLocation"
-	Title="MainWindow"
+	Title="WPFWeather"
 	Width="800"
 	Height="450"
 	mc:Ignorable="d">

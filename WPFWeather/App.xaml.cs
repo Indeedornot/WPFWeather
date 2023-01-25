@@ -26,10 +26,6 @@ namespace WPFWeather {
             _host = Host.CreateDefaultBuilder()
                 .AddViewModels()
                 .ConfigureServices((context, services) => {
-                    string? WeatherApiKey = context.Configuration.GetValue<string>("WeatherApiKey");
-                    if (WeatherApiKey == null) {
-                        throw new MissingMemberException(nameof(WeatherApiKey), "Weather Api Key not found");
-                    }
                     services.AddSingleton<IWeatherProvider, MeteoWeatherProvider>();
                     services.AddSingleton<ILocationProvider, GeocodeLocationProvider>();
 
