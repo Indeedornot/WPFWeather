@@ -39,8 +39,8 @@ public class WeatherHomeViewModel : ViewModelBase {
         }
     }
 
-    private string _errorMessage = string.Empty;
-    public string ErrorMessage {
+    private string? _errorMessage = string.Empty;
+    public string? ErrorMessage {
         get => _errorMessage;
         set {
             _errorMessage = value;
@@ -49,7 +49,7 @@ public class WeatherHomeViewModel : ViewModelBase {
         }
     }
 
-    public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
+    public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
 
     private WeatherData? _selectedWeather = null;
     public WeatherData? SelectedWeather {
@@ -73,6 +73,7 @@ public class WeatherHomeViewModel : ViewModelBase {
         _appStore.LocationChanged += OnLocationUpdate;
         _appStore.WeatherForecastsChanged += OnWeatherUpdate;
         _appStore.LoadingChanged += OnLoadingUpdate;
+        _appStore.ErrorValueChanged += OnErrorUpdate;
 
         EnsureDataLoaded();
 
@@ -83,18 +84,12 @@ public class WeatherHomeViewModel : ViewModelBase {
     }
 
     public async Task EnsureDataLoaded() {
-        try {
-            OnWeatherUpdate(_appStore.WeatherForecasts);
-            OnLocationUpdate(_appStore.Location);
-            OnLoadingUpdate(_appStore.IsLoading);
+        OnWeatherUpdate(_appStore.WeatherForecasts);
+        OnLocationUpdate(_appStore.Location);
+        OnLoadingUpdate(_appStore.IsLoading);
 
-            if (!_appStore.IsInitialized) {
-                await _appStore.Load();
-            }
-        }
-        catch (Exception e) {
-            ErrorMessage = "Error Loading Forecasts";
-            Debug.WriteLine("Error in WeatherHomeViewModel while loading AppStore", e.Message);
+        if (!_appStore.IsInitialized) {
+            await _appStore.Load();
         }
     }
 
@@ -114,10 +109,9 @@ public class WeatherHomeViewModel : ViewModelBase {
     }
     private void OnLoadingUpdate(bool isLoading) {
         IsLoading = isLoading;
-
-        if (isLoading) {
-            ErrorMessage = string.Empty;
-        }
+    }
+    private void OnErrorUpdate(string? error) {
+        ErrorMessage = error;
     }
 
     public override void Dispose() {

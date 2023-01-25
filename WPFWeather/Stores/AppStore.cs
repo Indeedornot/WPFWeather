@@ -56,6 +56,17 @@ public class AppStore {
         }
     }
 
+    private string? _errorMessage;
+    public string? ErrorMessage {
+        get => _errorMessage;
+        private set {
+            _errorMessage = value;
+            ErrorValueChanged?.Invoke(value);
+        }
+    }
+
+    public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
+
     public DateTime OldestFetched { get; internal set; }
     public DateTime LatestFetched { get; internal set; }
     public DateTime LastFetched { get; internal set; }
@@ -64,6 +75,7 @@ public class AppStore {
     public event Action<IEnumerable<WeatherData>> WeatherForecastsChanged;
     public event Action<bool> LoadingChanged;
     public event Action<bool> FetchingChanged;
+    public event Action<string?> ErrorValueChanged;
 
     private readonly IWeatherProvider _weatherProvider;
     private readonly IPersistentDataManager _dataManager;
@@ -102,9 +114,12 @@ public class AppStore {
 
             _weatherForecasts = weather.ToList();
             WeatherForecastsChanged?.Invoke(_weatherForecasts);
+
+            ErrorMessage = null;
         }
         catch (Exception e) {
             Debug.WriteLine("Error while fetching weather: ", e.Message);
+            ErrorMessage = "Error while fetching weather";
         }
 
         IsLoading = false;
@@ -127,9 +142,12 @@ public class AppStore {
 
             _weatherForecasts.AddRange(weather);
             WeatherForecastsChanged?.Invoke(_weatherForecasts);
+
+            ErrorMessage = null;
         }
         catch (Exception e) {
             Debug.WriteLine("Error while fetching future weather: ", e.Message);
+            ErrorMessage = "Error while fetching future weather";
         }
 
         IsFetching = false;
@@ -152,9 +170,12 @@ public class AppStore {
 
             _weatherForecasts.InsertRange(0, weather);
             WeatherForecastsChanged?.Invoke(_weatherForecasts);
+
+            ErrorMessage = null;
         }
         catch (Exception e) {
             Debug.WriteLine("Error while fetching future weather: ", e.Message);
+            ErrorMessage = "Error while fetching past weather";
         }
 
         IsFetching = false;
@@ -172,7 +193,7 @@ public class AppStore {
         catch (Exception) {
             _initializeTask = new(Initialize);
             IsLoading = false;
-            throw;
+            ErrorMessage = "Error while loading data";
         }
     }
 
