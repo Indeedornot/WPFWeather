@@ -166,17 +166,38 @@
 												Grid.Column="0"
 												d:Text="15%"
 												Info="Cloudiness"
-												Text="{Binding SelectedWeather.CloudPercentage, StringFormat={}{0}%}" />
+												Text="{Binding SelectedWeather.CloudPercentage, StringFormat={}{0}%}">
+												<control:InfoCard.Icon>
+													<icons:PackIconWeatherIcons
+														HorizontalAlignment="Stretch"
+														VerticalAlignment="Stretch"
+														Kind="Cloud" />
+												</control:InfoCard.Icon>
+											</control:InfoCard>
 											<control:InfoCard
 												Grid.Column="1"
 												d:Text="94%"
 												Info="Humidity"
-												Text="{Binding SelectedWeather.Humidity, StringFormat={}{0}%}" />
+												Text="{Binding SelectedWeather.Humidity, StringFormat={}{0}%}">
+												<control:InfoCard.Icon>
+													<icons:PackIconRemixIcon
+														HorizontalAlignment="Stretch"
+														VerticalAlignment="Stretch"
+														Kind="ContrastDrop2Line" />
+												</control:InfoCard.Icon>
+											</control:InfoCard>
 											<control:InfoCard
 												Grid.Column="2"
 												d:Text="1015hPa"
 												Info="Pressure"
-												Text="{Binding SelectedWeather.Pressure, StringFormat={}{0}hPa}" />
+												Text="{Binding SelectedWeather.Pressure, StringFormat={}{0}hPa}">
+												<control:InfoCard.Icon>
+													<icons:PackIconFontAwesome
+														HorizontalAlignment="Stretch"
+														VerticalAlignment="Stretch"
+														Kind="WeightHangingSolid" />
+												</control:InfoCard.Icon>
+											</control:InfoCard>
 										</StackPanel>
 									</Viewbox>
 								</Grid>
