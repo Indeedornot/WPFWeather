@@ -6,7 +6,6 @@ using System.Windows.Input;
 namespace WPFWeather.AttachedProp;
 
 //https://stackoverflow.com/a/34284262/11262883
-//Bug: Double registers events
 public class ScrollMaxEventsExtensions {
     #region ScrollHitXMaxCommand
     public static readonly DependencyProperty ScrollHitXMaxCommandProperty =
