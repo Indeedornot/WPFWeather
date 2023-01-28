@@ -1,26 +1,56 @@
-﻿<UserControl x:Class="WPFWeather.Views.SetLocation.SetZipCodeView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:WPFWeather.Views.SetLocation"
-			 xmlns:vmsSL="clr-namespace:WPFWeather.ViewModels.SetLocation"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+﻿<UserControl
+	x:Class="WPFWeather.Views.SetLocation.SetZipCodeView"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:WPFWeather.Views.SetLocation"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:vmsSL="clr-namespace:WPFWeather.ViewModels.SetLocation"
+	d:DesignHeight="450"
+	d:DesignWidth="800"
+	mc:Ignorable="d">
 	<Grid d:DataContext="{d:DesignInstance vmsSL:SetZipCodeViewModel}">
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="3*"/>
-			<ColumnDefinition Width="3"/>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="3"/>
-			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="3*" />
+			<ColumnDefinition Width="3" />
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="3" />
+			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
-		
-		<TextBox Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch" Style="{DynamicResource RoundBorder}" Text="{Binding ZipCode, UpdateSourceTrigger=PropertyChanged}"/>
-		<TextBox Grid.Row="1" Grid.Column="2" VerticalAlignment="Stretch" Style="{DynamicResource RoundBorder}" Text="{Binding CountryCode, UpdateSourceTrigger=PropertyChanged}"/>
-		<Button Grid.Row="1" Grid.Column="4" Command="{Binding SumbitCommand}" VerticalAlignment="Stretch" Style="{DynamicResource RoundBorder}">Sumbit</Button>
+
+		<Rectangle
+			x:Name="TextTrim1"
+			Grid.Row="0"
+			Grid.Column="0" />
+		<TextBox
+			Grid.Row="0"
+			Grid.Column="0"
+			MaxWidth="{Binding ActualWidth, ElementName=TextTrim1}"
+			Style="{StaticResource RoundTextBoxWatermark}"
+			Tag="Zip Code"
+			Text="{Binding ZipCode, UpdateSourceTrigger=PropertyChanged}" />
+		<Rectangle
+			x:Name="TextTrim2"
+			Grid.Row="0"
+			Grid.Column="2" />
+		<TextBox
+			Grid.Row="0"
+			Grid.Column="2"
+			MaxWidth="{Binding ActualWidth, ElementName=TextTrim2}"
+			MaxLength="3"
+			Style="{StaticResource RoundTextBoxWatermark}"
+			Tag="Code"
+			Text="{Binding CountryCode, UpdateSourceTrigger=PropertyChanged}" />
+		<Button
+			Grid.Row="0"
+			Grid.Column="4"
+			VerticalAlignment="Stretch"
+			Command="{Binding SumbitCommand}"
+			Style="{DynamicResource RoundBorder}">
+			Sumbit
+		</Button>
 	</Grid>
 </UserControl>

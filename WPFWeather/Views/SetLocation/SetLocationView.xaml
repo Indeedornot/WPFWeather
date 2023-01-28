@@ -1,56 +1,69 @@
-﻿<UserControl x:Class="WPFWeather.Views.SetLocation.SetLocationView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:WPFWeather.Views.SetLocation"
-			 xmlns:vmsSL="clr-namespace:WPFWeather.ViewModels.SetLocation"
-			 xmlns:converters="clr-namespace:WPFWeather.Converters" xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
-			 mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="400">
+﻿<UserControl
+	x:Class="WPFWeather.Views.SetLocation.SetLocationView"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:converters="clr-namespace:WPFWeather.Converters"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
+	xmlns:local="clr-namespace:WPFWeather.Views.SetLocation"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:vmsSL="clr-namespace:WPFWeather.ViewModels.SetLocation"
+	d:DesignHeight="100"
+	d:DesignWidth="400"
+	mc:Ignorable="d">
 	<Grid Background="{StaticResource BrushBgDefault}">
 		<Viewbox Margin="45">
 			<Grid d:DataContext="{d:DesignInstance vmsSL:SetLocationViewModel}">
 				<Grid.Resources>
-					<converters:StringToBooleanConverter x:Key="StringToBooleanConverter"/>
+					<converters:StringToBooleanConverter x:Key="StringToBooleanConverter" />
 				</Grid.Resources>
 				<Grid.RowDefinitions>
-					<RowDefinition Height="10"/>
-					<RowDefinition Height="auto"/>
-					<RowDefinition Height="10"/>
-					<RowDefinition Height="*"/>
+					<RowDefinition Height="10" />
+					<RowDefinition Height="auto" />
+					<RowDefinition Height="10" />
+					<RowDefinition Height="*" />
 				</Grid.RowDefinitions>
 				<Grid Grid.Row="0">
-					<Button 
-						Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" 
-						Command="{Binding CancelCommand}" 
-						Style="{DynamicResource RoundBorder}" 
-						HorizontalAlignment="Right">
+					<Button
+						Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+						HorizontalAlignment="Right"
+						Command="{Binding CancelCommand}"
+						Style="{DynamicResource RoundBorder}">
 						<Viewbox>
 							<icons:PackIconMicrons Kind="Cancel" />
 						</Viewbox>
 					</Button>
 				</Grid>
-				<StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Top" Margin="50 10 50 0" HorizontalAlignment="Center">
-					<RadioButton 
-				Command="{Binding ChooseLocationTypeCommand}" CommandParameter="Address" 
-				Foreground="{StaticResource BrushFgDefault}"
-				IsChecked="{Binding LocationType, Converter={StaticResource StringToBooleanConverter},ConverterParameter=Address}"
-				Content="Address"/>
-					<RadioButton 
-				Command="{Binding ChooseLocationTypeCommand}" CommandParameter="ZipCode" 
-				Foreground="{StaticResource BrushFgDefault}"
-				IsChecked="{Binding LocationType, Converter={StaticResource StringToBooleanConverter},ConverterParameter=ZipCode}"
-				Content="ZipCode" 
-				Margin="50 0 0 0"/>
+				<StackPanel
+					Grid.Row="1"
+					Margin="50,10,50,0"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Top"
+					Orientation="Horizontal">
+					<RadioButton
+						Command="{Binding ChooseLocationTypeCommand}"
+						CommandParameter="Address"
+						Content="Address"
+						Foreground="{StaticResource BrushFgDefault}"
+						IsChecked="{Binding LocationType, Converter={StaticResource StringToBooleanConverter}, ConverterParameter=Address}" />
+					<RadioButton
+						Margin="50,0,0,0"
+						Command="{Binding ChooseLocationTypeCommand}"
+						CommandParameter="ZipCode"
+						Content="ZipCode"
+						Foreground="{StaticResource BrushFgDefault}"
+						IsChecked="{Binding LocationType, Converter={StaticResource StringToBooleanConverter}, ConverterParameter=ZipCode}" />
 				</StackPanel>
-				<Grid Grid.Row="3" Margin="10 0" VerticalAlignment="Top">
+				<Grid
+					Grid.Row="3"
+					Margin="10,0"
+					VerticalAlignment="Top">
 					<Grid.Resources>
 						<DataTemplate DataType="{x:Type vmsSL:SetAddressViewModel}">
-							<local:SetAddressView/>
+							<local:SetAddressView />
 						</DataTemplate>
 						<DataTemplate DataType="{x:Type vmsSL:SetZipCodeViewModel}">
-							<local:SetZipCodeView/>
+							<local:SetZipCodeView />
 						</DataTemplate>
 					</Grid.Resources>
 
