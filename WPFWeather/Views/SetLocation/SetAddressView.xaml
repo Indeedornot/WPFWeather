@@ -15,18 +15,32 @@
 			<ColumnDefinition Width="10" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition />
+			<RowDefinition />
+		</Grid.RowDefinitions>
 		<TextBox
+			Grid.Row="0"
 			Grid.Column="0"
 			VerticalAlignment="Stretch"
 			Style="{StaticResource RoundTextBoxWatermark}"
 			Tag="City Name"
 			Text="{Binding CityName, UpdateSourceTrigger=PropertyChanged}" />
 		<Button
+			Grid.Row="0"
 			Grid.Column="2"
 			VerticalAlignment="Stretch"
 			Command="{Binding SumbitCommand}"
 			Style="{DynamicResource RoundBorder}">
 			Sumbit
 		</Button>
+
+		<TextBlock
+			Grid.Row="1"
+			Grid.Column="0"
+			HorizontalAlignment="Center"
+			FontSize="8"
+			Foreground="Red"
+			Text="{Binding ErrorMessage}" />
 	</Grid>
 </UserControl>

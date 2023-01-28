@@ -233,29 +233,30 @@
 			<ControlTemplate
 				x:Key="TextBoxWatermarkTemplate"
 				TargetType="{x:Type TextBox}">
-				<Border
-					Name="border"
-					Background="{TemplateBinding Panel.Background}"
-					BorderBrush="{TemplateBinding Border.BorderBrush}"
-					BorderThickness="{TemplateBinding Border.BorderThickness}"
-					SnapsToDevicePixels="True">
-					<Grid Focusable="False">
-						<ScrollViewer
-							x:Name="PART_ContentHost"
-							Margin="5,0,0,0"
-							VerticalAlignment="Center"
-							Focusable="False" />
-						<Label
-							x:Name="WaterMarkLabel"
-							Margin="5,0,0,0"
-							VerticalAlignment="Center"
-							Content="{TemplateBinding Tag}"
-							Focusable="False"
-							FontFamily="Arial"
-							Foreground="Gray"
-							Visibility="Collapsed" />
-					</Grid>
-				</Border>
+				<Grid>
+					<Border
+						Name="border"
+						Background="{TemplateBinding Panel.Background}"
+						BorderBrush="{TemplateBinding Border.BorderBrush}"
+						BorderThickness="{TemplateBinding Border.BorderThickness}"
+						SnapsToDevicePixels="True" />
+					<ScrollViewer
+						x:Name="PART_ContentHost"
+						Margin="5,0,0,0"
+						VerticalAlignment="Center"
+						Focusable="False" />
+
+					<Label
+						x:Name="WaterMarkLabel"
+						Margin="5,0,0,0"
+						Padding="0"
+						VerticalAlignment="Center"
+						Content="{TemplateBinding Tag}"
+						Focusable="False"
+						FontFamily="Arial"
+						Foreground="Gray"
+						Visibility="Hidden" />
+				</Grid>
 
 				<ControlTemplate.Triggers>
 					<MultiTrigger>

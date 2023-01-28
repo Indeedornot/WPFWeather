@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -54,8 +56,8 @@ internal class GeocodeLocationProvider : ILocationProvider {
     private static Location GeocodeModelToLocation(GeocodeLocationModel model) {
         return new Location() {
             CityName = model.DisplayName.Split(",")[0],
-            Latitude = double.Parse(model.Lat),
-            Longitude = double.Parse(model.Lon)
+            Latitude = double.Parse(model.Lat, CultureInfo.InvariantCulture),
+            Longitude = double.Parse(model.Lon, CultureInfo.InvariantCulture)
         };
     }
 }

@@ -21,11 +21,10 @@ public class SetLocationCommand : AsyncCommandBase {
     public override async Task ExecuteAsync(object parameter) {
         Location? location = await _viewModel.GetLocation();
         if (location == null) {
-            _viewModel.IsValidLocation = false;
+            _viewModel.ErrorMessage = "Location not found";
             return;
         }
 
-        _viewModel.IsValidLocation = true;
         _appStore.SetLocation(location);
         _weatherHomeNavigationService.Navigate();
     }

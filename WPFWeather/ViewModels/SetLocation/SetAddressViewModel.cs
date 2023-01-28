@@ -18,14 +18,17 @@ public class SetAddressViewModel : ViewModelBase, IViewModelSetLocation {
         }
     }
 
-    private bool _isValidLocation;
-    public bool IsValidLocation {
-        get => _isValidLocation;
+    private string? _errorMessage = string.Empty;
+    public string? ErrorMessage {
+        get => _errorMessage;
         set {
-            _isValidLocation = value;
-            OnPropertyChanged(nameof(IsValidLocation));
+            _errorMessage = value;
+            OnPropertyChanged(nameof(ErrorMessage));
+            OnPropertyChanged(nameof(HasError));
         }
     }
+
+    public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
 
     public SetLocationCommand SumbitCommand { get; }
 

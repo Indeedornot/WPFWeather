@@ -19,6 +19,7 @@
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*" />
+			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 
 		<Rectangle
@@ -52,5 +53,13 @@
 			Style="{DynamicResource RoundBorder}">
 			Sumbit
 		</Button>
+
+		<TextBlock
+			Grid.Row="1"
+			Grid.Column="0"
+			HorizontalAlignment="Center"
+			FontSize="8"
+			Foreground="Red"
+			Text="{Binding ErrorMessage}" />
 	</Grid>
 </UserControl>
