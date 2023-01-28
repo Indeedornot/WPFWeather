@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using WPFWeather.Models;
@@ -42,40 +43,13 @@ public class AppStore {
         }
     }
 
-    private bool _isFetching;
-    /// <summary>
-    /// Signals fetching of additional weatherForecasts
-    /// </summary>
-    public bool IsFetching {
-        get => _isFetching;
-        private set {
-            if (_isFetching == value) return;
-
-            _isFetching = value;
-            FetchingChanged?.Invoke(value);
-        }
-    }
-
-    private string? _errorMessage;
-    public string? ErrorMessage {
-        get => _errorMessage;
-        private set {
-            _errorMessage = value;
-            ErrorValueChanged?.Invoke(value);
-        }
-    }
-
-    public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
-
-    public DateTime OldestFetched { get; internal set; }
-    public DateTime LatestFetched { get; internal set; }
-    public DateTime LastFetched { get; internal set; }
+    public DateTime LastFetched { get; private set; }
+    public DateTime OldestFetched { get; private set; }
+    public DateTime LatestFetched { get; private set; }
 
     public event Action<Location?> LocationChanged;
     public event Action<IEnumerable<WeatherData>> WeatherForecastsChanged;
     public event Action<bool> LoadingChanged;
-    public event Action<bool> FetchingChanged;
-    public event Action<string?> ErrorValueChanged;
 
     private readonly IWeatherProvider _weatherProvider;
     private readonly IPersistentDataManager _dataManager;
@@ -89,16 +63,57 @@ public class AppStore {
 
     public void SetLocation(Location? location) {
         Location = location;
-        ResetWeather();
+    }
+
+    public void SetWeather(IEnumerable<WeatherData> weather) {
+        if (weather is null) {
+            _weatherForecasts.Clear();
+            WeatherForecastsChanged?.Invoke(_weatherForecasts);
+            return;
+        }
+
+        _weatherForecasts = weather.ToList();
+        LastFetched = DateTime.Now;
+        LatestFetched = _weatherForecasts.Last().Time;
+        OldestFetched = _weatherForecasts.First().Time;
+
+        WeatherForecastsChanged?.Invoke(_weatherForecasts);
+    }
+
+    public void AddPastWeather(IEnumerable<WeatherData> weather) {
+        if (weather is null) return;
+
+        var weatherList = weather.ToList();
+        _weatherForecasts.InsertRange(0, weatherList);
+        OldestFetched = weatherList.First().Time;
+        LastFetched = DateTime.Now;
+
+        WeatherForecastsChanged?.Invoke(_weatherForecasts);
+    }
+
+    public void AddFutureWeather(IEnumerable<WeatherData> weather) {
+        if (weather is null) return;
+
+        var weatherList = weather.ToList();
+        _weatherForecasts.AddRange(weatherList);
+        LatestFetched = weatherList.Last().Time;
+        LastFetched = DateTime.Now;
+
+        WeatherForecastsChanged?.Invoke(_weatherForecasts);
     }
 
     /// <summary>
     /// Fetches Weather from Now for 3 Days
-    /// <br/> Clears all previous weather data
+    /// <br/> Clears all previous weather data if successful
     /// </summary>
     /// <returns></returns>
-    public async Task ResetWeather() {
-        if (Location == null) return;
+    /// <exception cref="System.Net.Http.HttpRequestException"></exception>
+    /// <exception cref="ArgumentException"></exception>
+    public async Task ResetWeather(CancellationToken? cancellationToken = null) {
+        if (Location == null) {
+            throw new ArgumentException("Location is null");
+        }
+
         IsLoading = true;
 
         DateTime lastFetched, oldestFetched, latestFetched;
@@ -106,7 +121,7 @@ public class AppStore {
         latestFetched = DateTime.Now.AddDays(3);
 
         try {
-            IEnumerable<WeatherData> weather = await _weatherProvider.GetWeatherAsync(Location, oldestFetched, latestFetched);
+            IEnumerable<WeatherData> weather = await _weatherProvider.GetWeatherAsync(Location, oldestFetched, latestFetched, cancellationToken);
 
             LastFetched = lastFetched;
             LatestFetched = latestFetched;
@@ -114,71 +129,13 @@ public class AppStore {
 
             _weatherForecasts = weather.ToList();
             WeatherForecastsChanged?.Invoke(_weatherForecasts);
-
-            ErrorMessage = null;
+            IsLoading = false;
         }
         catch (Exception e) {
+            IsLoading = false;
             Debug.WriteLine("Error while fetching weather: ", e.Message);
-            ErrorMessage = "Error while fetching weather";
+            throw;
         }
-
-        IsLoading = false;
-    }
-
-    public async Task FetchFutureWeather() {
-        if (Location == null) return;
-        if (IsFetching || IsLoading) return;
-
-        DateTime latestFetched = DateTime.Now.AddDays(3);
-        if (latestFetched > DateTime.Now.AddDays(12)) return;
-
-        IsFetching = true;
-
-        try {
-            IEnumerable<WeatherData> weather = await _weatherProvider.GetWeatherAsync(Location, LatestFetched, latestFetched);
-
-            LastFetched = DateTime.Now;
-            LatestFetched = latestFetched;
-
-            _weatherForecasts.AddRange(weather);
-            WeatherForecastsChanged?.Invoke(_weatherForecasts);
-
-            ErrorMessage = null;
-        }
-        catch (Exception e) {
-            Debug.WriteLine("Error while fetching future weather: ", e.Message);
-            ErrorMessage = "Error while fetching future weather";
-        }
-
-        IsFetching = false;
-    }
-
-    public async Task FetchPastWeather() {
-        if (Location == null) return;
-        if (IsFetching || IsLoading) return;
-
-        DateTime oldestFetched = DateTime.Now.Subtract(TimeSpan.FromDays(3));
-        if (oldestFetched < DateTime.Now.Subtract(TimeSpan.FromDays(12))) return;
-
-        IsFetching = true;
-
-        try {
-            IEnumerable<WeatherData> weather = await _weatherProvider.GetWeatherAsync(Location, oldestFetched, OldestFetched);
-
-            LastFetched = DateTime.Now;
-            OldestFetched = oldestFetched;
-
-            _weatherForecasts.InsertRange(0, weather);
-            WeatherForecastsChanged?.Invoke(_weatherForecasts);
-
-            ErrorMessage = null;
-        }
-        catch (Exception e) {
-            Debug.WriteLine("Error while fetching future weather: ", e.Message);
-            ErrorMessage = "Error while fetching past weather";
-        }
-
-        IsFetching = false;
     }
 
     #region Loading
@@ -193,7 +150,6 @@ public class AppStore {
         catch (Exception) {
             _initializeTask = new(Initialize);
             IsLoading = false;
-            ErrorMessage = "Error while loading data";
         }
     }
 

@@ -2,18 +2,22 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using WPFWeather.Commands;
 using WPFWeather.Models;
 using WPFWeather.Models.LocationInfo;
 using WPFWeather.Services.NavigationService;
+using WPFWeather.Services.WeatherProvider;
 using WPFWeather.Stores;
 using WPFWeather.ViewModels.SetLocation;
 
 namespace WPFWeather.ViewModels;
 public class WeatherHomeViewModel : ViewModelBase {
     private readonly AppStore _appStore;
+    private readonly IWeatherProvider _weatherProvider;
 
     public ObservableCollection<WeatherData> Weather { get; set; } = new();
 
@@ -36,6 +40,17 @@ public class WeatherHomeViewModel : ViewModelBase {
 
             _isLoading = value;
             OnPropertyChanged(nameof(IsLoading));
+        }
+    }
+
+    private bool _isFetching;
+    public bool IsFetching {
+        get => _isFetching;
+        set {
+            if (_isFetching == value) return;
+
+            _isFetching = value;
+            OnPropertyChanged(nameof(IsFetching));
         }
     }
 
@@ -62,34 +77,90 @@ public class WeatherHomeViewModel : ViewModelBase {
         }
     }
 
+    public CancellationTokenSource TokenSource { get; } = new();
+
     public ReloadWeatherCommand ReloadCommand { get; }
     public RelayCommand FetchFutureWeatherCommand { get; }
     public RelayCommand FetchPastWeatherCommand { get; }
     public NavigateCommand<SetLocationViewModel> SetLocationCommand { get; }
 
-    public WeatherHomeViewModel(AppStore appStore, NavigationService<SetLocationViewModel> setLocationNavigationService) {
+    public WeatherHomeViewModel(AppStore appStore, IWeatherProvider weatherProvider, NavigationService<SetLocationViewModel> setLocationNavigationService) {
         _appStore = appStore;
+        _weatherProvider = weatherProvider;
 
         _appStore.LocationChanged += OnLocationUpdate;
         _appStore.WeatherForecastsChanged += OnWeatherUpdate;
-        _appStore.LoadingChanged += OnLoadingUpdate;
-        _appStore.ErrorValueChanged += OnErrorUpdate;
 
         EnsureDataLoaded();
 
-        ReloadCommand = new ReloadWeatherCommand(_appStore);
+        SelectedWeather = Weather?.FirstOrDefault();
+
+        ReloadCommand = new ReloadWeatherCommand(this, _appStore);
         SetLocationCommand = new NavigateCommand<SetLocationViewModel>(setLocationNavigationService);
-        FetchFutureWeatherCommand = new RelayCommand((_) => _appStore.FetchFutureWeather());
-        FetchPastWeatherCommand = new RelayCommand((_) => _appStore.FetchPastWeather());
+        FetchFutureWeatherCommand = new RelayCommand((_) => FetchFutureWeather());
+        FetchPastWeatherCommand = new RelayCommand((_) => FetchPastWeather());
     }
 
+
+    public async Task FetchFutureWeather() {
+        Location? location = _appStore.Location;
+        DateTime fetchFrom = _appStore.LatestFetched;
+
+        if (location == null) return;
+        if (IsFetching || IsLoading) return;
+
+        DateTime fetchTo = DateTime.Now.AddDays(3);
+        if (fetchTo > DateTime.Now.AddDays(12)) return;
+        IsFetching = true;
+
+        try {
+            IEnumerable<WeatherData> weather = await _weatherProvider.GetWeatherAsync(location, fetchFrom, fetchTo, TokenSource.Token);
+            _appStore.AddFutureWeather(weather);
+
+            ErrorMessage = null;
+        }
+        catch (Exception e) {
+            Debug.WriteLine("Error while fetching future weather: ", e.Message);
+            ErrorMessage = "Error while fetching future weather";
+        }
+
+        IsFetching = false;
+    }
+
+    public async Task FetchPastWeather() {
+        Location? location = _appStore.Location;
+        DateTime fetchTo = _appStore.OldestFetched;
+
+        if (location == null) return;
+        if (IsFetching || IsLoading) return;
+
+        DateTime fetchFrom = DateTime.Now.Subtract(TimeSpan.FromDays(3));
+        if (fetchFrom < DateTime.Now.Subtract(TimeSpan.FromDays(12))) return;
+        IsFetching = true;
+
+        try {
+            IEnumerable<WeatherData> weather = await _weatherProvider.GetWeatherAsync(location, fetchFrom, fetchTo, TokenSource.Token);
+            _appStore.AddPastWeather(weather);
+
+            ErrorMessage = null;
+        }
+        catch (Exception e) {
+            Debug.WriteLine("Error while fetching future weather: ", e.Message);
+            ErrorMessage = "Error while fetching past weather";
+        }
+
+        IsFetching = false;
+    }
+
+
     public async Task EnsureDataLoaded() {
-        OnWeatherUpdate(_appStore.WeatherForecasts);
-        OnLocationUpdate(_appStore.Location);
-        OnLoadingUpdate(_appStore.IsLoading);
+        Weather = new(_appStore.WeatherForecasts);
+        Location = _appStore.Location?.ToString();
+        IsLoading = _appStore.IsLoading;
 
         if (!_appStore.IsInitialized) {
             await _appStore.Load();
+            //error message
         }
     }
 
@@ -109,9 +180,6 @@ public class WeatherHomeViewModel : ViewModelBase {
     }
     private void OnLoadingUpdate(bool isLoading) {
         IsLoading = isLoading;
-    }
-    private void OnErrorUpdate(string? error) {
-        ErrorMessage = error;
     }
 
     public override void Dispose() {

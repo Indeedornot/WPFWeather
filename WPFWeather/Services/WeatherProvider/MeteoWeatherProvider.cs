@@ -5,8 +5,8 @@ using System.Globalization;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Navigation;
 
 using WPFWeather.Models;
 using WPFWeather.Models.LocationInfo;
@@ -19,9 +19,9 @@ internal class MeteoWeatherProvider : IWeatherProvider {
         httpClient = new HttpClient();
     }
 
-    public async Task<IEnumerable<WeatherData>> GetWeatherAsync(Location location, DateTime from, DateTime to) {
+    public async Task<IEnumerable<WeatherData>> GetWeatherAsync(Location location, DateTime from, DateTime to, CancellationToken? cancellationToken) {
         string requestUri = CreateRequestUri(location, from, to);
-        MeteoWeatherModel response = await httpClient.GetFromJsonAsync<MeteoWeatherModel>(requestUri);
+        MeteoWeatherModel response = await httpClient.GetFromJsonAsync<MeteoWeatherModel>(requestUri, cancellationToken: cancellationToken ?? CancellationToken.None);
         //TODO: Errors
         return MeteoModelToWeatherData(response);
     }

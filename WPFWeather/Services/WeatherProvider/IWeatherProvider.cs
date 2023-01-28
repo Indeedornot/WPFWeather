@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
+using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 using WPFWeather.Models;
@@ -17,5 +18,5 @@ public interface IWeatherProvider {
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
     /// <exception cref="HttpRequestException"></exception>
-    public Task<IEnumerable<WeatherData>> GetWeatherAsync(Location location, DateTime from, DateTime to);
+    public Task<IEnumerable<WeatherData>> GetWeatherAsync(Location location, DateTime from, DateTime to, CancellationToken? cancellationToken = null);
 }
