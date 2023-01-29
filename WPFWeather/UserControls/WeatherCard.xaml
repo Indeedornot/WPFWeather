@@ -28,10 +28,19 @@
 			<Grid
 				d:Visibility="Visible"
 				Visibility="{Binding Loading, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
-				<TextBlock
-					HorizontalAlignment="Center"
-					VerticalAlignment="Top"
-					Text="{Binding Time}" />
+				<StackPanel VerticalAlignment="Top">
+					<TextBlock
+						HorizontalAlignment="Center"
+						FontSize="12"
+						Text="{Binding TimeString}" />
+					<TextBlock
+						Margin="-2"
+						Padding="0"
+						HorizontalAlignment="Center"
+						FontSize="6"
+						Text="{Binding DateString}" />
+				</StackPanel>
+
 				<local:WeatherIconDisplay
 					Height="32"
 					HorizontalAlignment="Stretch"

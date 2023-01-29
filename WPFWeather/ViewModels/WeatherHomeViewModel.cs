@@ -101,7 +101,6 @@ public class WeatherHomeViewModel : ViewModelBase {
         FetchPastWeatherCommand = new RelayCommand((_) => FetchPastWeather());
     }
 
-
     public async Task FetchFutureWeather() {
         Location? location = _appStore.Location;
         DateTime fetchFrom = _appStore.LatestFetched;
@@ -109,7 +108,7 @@ public class WeatherHomeViewModel : ViewModelBase {
         if (location == null) return;
         if (IsFetching || IsLoading) return;
 
-        DateTime fetchTo = DateTime.Now.AddDays(3);
+        DateTime fetchTo = fetchFrom.AddDays(3);
         if (fetchTo > DateTime.Now.AddDays(12)) return;
         IsFetching = true;
 
@@ -134,7 +133,7 @@ public class WeatherHomeViewModel : ViewModelBase {
         if (location == null) return;
         if (IsFetching || IsLoading) return;
 
-        DateTime fetchFrom = DateTime.Now.Subtract(TimeSpan.FromDays(3));
+        DateTime fetchFrom = fetchTo.Subtract(TimeSpan.FromDays(3));
         if (fetchFrom < DateTime.Now.Subtract(TimeSpan.FromDays(12))) return;
         IsFetching = true;
 

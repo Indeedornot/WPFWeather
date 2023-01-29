@@ -1,3 +1,4 @@
+using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -13,39 +14,39 @@ public partial class WeatherCard : UserControl {
         InitializeComponent();
     }
 
-    public string Time {
-        get => (string)GetValue(TimeProperty);
-        set => SetValue(TimeProperty, value);
-    }
+    public string TimeString => Time.ToString("HH:mm");
+    public string DateString => Time.ToString("dd-MM");
 
     public string Temperature {
         get => (string)GetValue(TemperatureProperty);
         set => SetValue(TemperatureProperty, value);
     }
 
-    public static readonly DependencyProperty TimeProperty =
-        DependencyProperty.Register(nameof(Time), typeof(string), typeof(WeatherCard), new PropertyMetadata(default(string)));
-
-    public static readonly DependencyProperty TemperatureProperty =
-        DependencyProperty.Register(nameof(Temperature), typeof(string), typeof(WeatherCard), new PropertyMetadata(default(string)));
-
-
+    public DateTime Time {
+        get => (DateTime)GetValue(TimeProperty);
+        set => SetValue(TimeProperty, value);
+    }
 
     public bool Loading {
         get => (bool)GetValue(LoadingProperty);
         set => SetValue(LoadingProperty, value);
     }
 
-    // Using a DependencyProperty as the backing store for Loading.  This enables animation, styling, binding, etc...
-    public static readonly DependencyProperty LoadingProperty =
-        DependencyProperty.Register(nameof(Loading), typeof(bool), typeof(WeatherCard), new PropertyMetadata(default(bool)));
-
     public WeatherType Description {
         get => (WeatherType)GetValue(DescriptionProperty);
         set => SetValue(DescriptionProperty, value);
     }
 
-    // Using a DependencyProperty as the backing store for WeatherType.  This enables animation, styling, binding, etc...
+
+    public static readonly DependencyProperty TimeProperty =
+        DependencyProperty.Register(nameof(Time), typeof(DateTime), typeof(WeatherCard), new PropertyMetadata(default(DateTime)));
+
+    public static readonly DependencyProperty TemperatureProperty =
+        DependencyProperty.Register(nameof(Temperature), typeof(string), typeof(WeatherCard), new PropertyMetadata(default(string)));
+
+    public static readonly DependencyProperty LoadingProperty =
+        DependencyProperty.Register(nameof(Loading), typeof(bool), typeof(WeatherCard), new PropertyMetadata(default(bool)));
+
     public static readonly DependencyProperty DescriptionProperty =
         DependencyProperty.Register(nameof(Description), typeof(WeatherType), typeof(WeatherCard), new PropertyMetadata(WeatherType.Clear));
 

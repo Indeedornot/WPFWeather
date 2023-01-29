@@ -249,7 +249,7 @@
 									d:Time="12:00"
 									Description="{Binding Description}"
 									Temperature="{Binding Temperature}"
-									Time="{Binding Time, StringFormat={}{0:HH:mm}}" />
+									Time="{Binding Time}" />
 							</DataTemplate>
 						</ListView.ItemTemplate>
 
