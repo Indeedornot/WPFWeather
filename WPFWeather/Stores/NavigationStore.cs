@@ -5,12 +5,15 @@ using WPFWeather.ViewModels;
 
 namespace WPFWeather.Stores;
 
-public class NavigationStore {
+public class NavigationStore
+{
 
     private ViewModelBase? _currentViewModel;
-    public ViewModelBase? CurrentViewModel {
+    public ViewModelBase? CurrentViewModel
+    {
         get => _currentViewModel;
-        set {
+        set
+        {
             _currentViewModel?.Dispose();
             _currentViewModel = value;
             OnCurrentViewModelChanged();
@@ -22,7 +25,8 @@ public class NavigationStore {
 
     public event Action CurrentViewModelChanged;
 
-    private void OnCurrentViewModelChanged() {
+    private void OnCurrentViewModelChanged()
+    {
         CurrentViewModelChanged?.Invoke();
     }
 }

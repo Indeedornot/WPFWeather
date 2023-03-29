@@ -2,26 +2,32 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace WPFWeather.UserControls {
+namespace WPFWeather.UserControls
+{
     /// <summary>
     /// Interaction logic for ErrorDisplay.xaml
     /// </summary>
-    public partial class ErrorDisplay : UserControl {
-        public ErrorDisplay() {
+    public partial class ErrorDisplay : UserControl
+    {
+        public ErrorDisplay()
+        {
             InitializeComponent();
         }
 
-        public string ButtonText {
+        public string ButtonText
+        {
             get => (string)GetValue(ButtonTextProperty);
             set => SetValue(ButtonTextProperty, value);
         }
 
-        public string ErrorText {
+        public string ErrorText
+        {
             get => (string)GetValue(ErrorTextProperty);
             set => SetValue(ErrorTextProperty, value);
         }
 
-        public ICommand ButtonCommand {
+        public ICommand ButtonCommand
+        {
             get => (ICommand)GetValue(ButtonCommandProperty);
             set => SetValue(ButtonCommandProperty, value);
         }

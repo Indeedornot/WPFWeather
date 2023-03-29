@@ -10,7 +10,8 @@ using System.Threading.Tasks;
 
 namespace WPFWeather.Services.WeatherProvider;
 
-public class Hourly {
+public class Hourly
+{
     [JsonPropertyName("time")]
     public List<string> Time { get; set; }
 
@@ -71,7 +72,8 @@ public class Hourly {
 //    public string Windspeed { get; set; }
 //}
 
-public class MeteoWeatherModel {
+public class MeteoWeatherModel
+{
     [JsonPropertyName("latitude")]
     public double Latitude { get; set; }
 

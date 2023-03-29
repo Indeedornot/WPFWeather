@@ -3,11 +3,13 @@ using System.Windows.Data;
 
 namespace WPFWeather.Converters;
 
-class MultiBooleanToVisibilityConverter : IMultiValueConverter {
+class MultiBooleanToVisibilityConverter : IMultiValueConverter
+{
     public object Convert(object[] values,
                             Type targetType,
                             object parameter,
-                            System.Globalization.CultureInfo culture) {
+                            System.Globalization.CultureInfo culture)
+    {
         bool visible = true;
         foreach (object value in values)
             if (value is bool)
@@ -22,7 +24,8 @@ class MultiBooleanToVisibilityConverter : IMultiValueConverter {
     public object[] ConvertBack(object value,
                                 Type[] targetTypes,
                                 object parameter,
-                                System.Globalization.CultureInfo culture) {
+                                System.Globalization.CultureInfo culture)
+    {
         throw new NotImplementedException();
     }
 }

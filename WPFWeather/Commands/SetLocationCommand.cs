@@ -7,20 +7,24 @@ using WPFWeather.ViewModels;
 using WPFWeather.ViewModels.SetLocation;
 
 namespace WPFWeather.Commands;
-public class SetLocationCommand : AsyncCommandBase {
+public class SetLocationCommand : AsyncCommandBase
+{
     private readonly IViewModelSetLocation _viewModel;
     private readonly NavigationService<WeatherHomeViewModel> _weatherHomeNavigationService;
     private readonly AppStore _appStore;
 
-    public SetLocationCommand(IViewModelSetLocation viewModel, AppStore appStore, NavigationService<WeatherHomeViewModel> weatherHomeNavigationService) {
+    public SetLocationCommand(IViewModelSetLocation viewModel, AppStore appStore, NavigationService<WeatherHomeViewModel> weatherHomeNavigationService)
+    {
         _viewModel = viewModel;
         _weatherHomeNavigationService = weatherHomeNavigationService;
         _appStore = appStore;
     }
 
-    public override async Task ExecuteAsync(object parameter) {
+    public override async Task ExecuteAsync(object parameter)
+    {
         Location? location = await _viewModel.GetLocation();
-        if (location == null) {
+        if (location == null)
+        {
             _viewModel.ErrorMessage = "Location not found";
             return;
         }

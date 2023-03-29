@@ -7,12 +7,15 @@ namespace WPFWeather.UserControls;
 /// <summary>
 /// Interaction logic for WeatherIcon.xaml
 /// </summary>
-public partial class WeatherIconDisplay : UserControl {
-    public WeatherIconDisplay() {
+public partial class WeatherIconDisplay : UserControl
+{
+    public WeatherIconDisplay()
+    {
         InitializeComponent();
     }
 
-    public WeatherType Description {
+    public WeatherType Description
+    {
         get => (WeatherType)GetValue(WeatherTypeProperty);
         set => SetValue(WeatherTypeProperty, value);
     }

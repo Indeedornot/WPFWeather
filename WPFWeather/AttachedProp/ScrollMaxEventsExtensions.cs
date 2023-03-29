@@ -6,7 +6,8 @@ using System.Windows.Input;
 namespace WPFWeather.AttachedProp;
 
 //https://stackoverflow.com/a/34284262/11262883
-public class ScrollMaxEventsExtensions {
+public class ScrollMaxEventsExtensions
+{
     #region ScrollHitXMaxCommand
     public static readonly DependencyProperty ScrollHitXMaxCommandProperty =
         DependencyProperty.RegisterAttached(
@@ -16,10 +17,12 @@ public class ScrollMaxEventsExtensions {
             new PropertyMetadata(default(ICommand),
             OnScrollChangedCommandChanged));
 
-    public static void SetScrollHitXMaxCommand(DependencyObject element, ICommand value) {
+    public static void SetScrollHitXMaxCommand(DependencyObject element, ICommand value)
+    {
         element.SetValue(ScrollHitXMaxCommandProperty, value);
     }
-    public static ICommand GetScrollHitXMaxCommand(DependencyObject element) {
+    public static ICommand GetScrollHitXMaxCommand(DependencyObject element)
+    {
         return (ICommand)element.GetValue(ScrollHitXMaxCommandProperty);
     }
     #endregion
@@ -32,10 +35,12 @@ public class ScrollMaxEventsExtensions {
             new PropertyMetadata(default(ICommand),
             OnScrollChangedCommandChanged));
 
-    public static void SetScrollHitXMinCommand(DependencyObject element, ICommand value) {
+    public static void SetScrollHitXMinCommand(DependencyObject element, ICommand value)
+    {
         element.SetValue(ScrollHitXMinCommandProperty, value);
     }
-    public static ICommand GetScrollHitXMinCommand(DependencyObject element) {
+    public static ICommand GetScrollHitXMinCommand(DependencyObject element)
+    {
         return (ICommand)element.GetValue(ScrollHitXMinCommandProperty);
     }
     #endregion
@@ -48,10 +53,12 @@ public class ScrollMaxEventsExtensions {
             new PropertyMetadata(default(ICommand),
             OnScrollChangedCommandChanged));
 
-    public static void SetScrollHitYMaxCommand(DependencyObject element, ICommand value) {
+    public static void SetScrollHitYMaxCommand(DependencyObject element, ICommand value)
+    {
         element.SetValue(ScrollHitYMaxCommandProperty, value);
     }
-    public static ICommand GetScrollHitYMaxCommand(DependencyObject element) {
+    public static ICommand GetScrollHitYMaxCommand(DependencyObject element)
+    {
         return (ICommand)element.GetValue(ScrollHitYMaxCommandProperty);
     }
     #endregion
@@ -64,45 +71,53 @@ public class ScrollMaxEventsExtensions {
             new PropertyMetadata(default(ICommand),
             OnScrollChangedCommandChanged));
 
-    public static void SetScrollHitYMinCommand(DependencyObject element, ICommand value) {
+    public static void SetScrollHitYMinCommand(DependencyObject element, ICommand value)
+    {
         element.SetValue(ScrollHitYMinCommandProperty, value);
     }
-    public static ICommand GetScrollHitYMinCommand(DependencyObject element) {
+    public static ICommand GetScrollHitYMinCommand(DependencyObject element)
+    {
         return (ICommand)element.GetValue(ScrollHitYMinCommandProperty);
     }
     #endregion
 
     //Commands changed (and whether we need to listen for reloads)
     private static int _commandsRegistered = 0;
-    private static void OnScrollChangedCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+    private static void OnScrollChangedCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
         ItemsControl? itemsControl = d as ItemsControl;
         if (itemsControl == null) return;
 
         int oldCommandCount = _commandsRegistered;
 
         //command added
-        if (e.NewValue != null && e.OldValue == null) {
+        if (e.NewValue != null && e.OldValue == null)
+        {
             _commandsRegistered += 1;
         }
         //command removed
-        else if (e.NewValue == null && e.OldValue != null) {
+        else if (e.NewValue == null && e.OldValue != null)
+        {
             _commandsRegistered -= 1;
         }
 
         //first new command added
-        if (_commandsRegistered > 0 && oldCommandCount == 0) {
+        if (_commandsRegistered > 0 && oldCommandCount == 0)
+        {
             itemsControl.Loaded += ListViewOnLoaded;
             return;
         }
         //all commands removed
-        else if (_commandsRegistered == 0 && oldCommandCount > 0) {
+        else if (_commandsRegistered == 0 && oldCommandCount > 0)
+        {
             itemsControl.Loaded -= ListViewOnLoaded;
             return;
         }
     }
 
     //ListView (re)loaded
-    private static void ListViewOnLoaded(object sender, RoutedEventArgs routedEventArgs) {
+    private static void ListViewOnLoaded(object sender, RoutedEventArgs routedEventArgs)
+    {
         ItemsControl? itemsControl = sender as ItemsControl;
         if (itemsControl == null) return;
 
@@ -113,7 +128,8 @@ public class ScrollMaxEventsExtensions {
     }
 
     //Handle scroll changed
-    private static void ScrollViewerOnScrollChanged(object sender, ScrollChangedEventArgs e) {
+    private static void ScrollViewerOnScrollChanged(object sender, ScrollChangedEventArgs e)
+    {
         var scrollViewer = sender as ScrollViewer;
         if (scrollViewer == null) return;
 
@@ -123,7 +139,8 @@ public class ScrollMaxEventsExtensions {
         HandleScrollChanged(itemsControl, e);
     }
 
-    private static void HandleScrollChanged(ItemsControl itemsControl, ScrollChangedEventArgs e) {
+    private static void HandleScrollChanged(ItemsControl itemsControl, ScrollChangedEventArgs e)
+    {
         ICommand MaxXHitCommand = GetScrollHitXMaxCommand(itemsControl);
         ICommand MinXHitCommand = GetScrollHitXMinCommand(itemsControl);
 
@@ -133,22 +150,28 @@ public class ScrollMaxEventsExtensions {
         // && e.VerticalChange == 0
         if (e.HorizontalChange == 0 && e.VerticalChange == 0) return;
 
-        if (e.HorizontalChange != 0) {
-            if (e.HorizontalOffset == 0) {
+        if (e.HorizontalChange != 0)
+        {
+            if (e.HorizontalOffset == 0)
+            {
                 MinXHitCommand.Execute(e);
             }
 
-            if (e.HorizontalOffset == e.ExtentWidth - e.ViewportWidth) {
+            if (e.HorizontalOffset == e.ExtentWidth - e.ViewportWidth)
+            {
                 MaxXHitCommand.Execute(e);
             }
         }
 
-        if (e.VerticalChange != 0) {
-            if (e.VerticalOffset == 0) {
+        if (e.VerticalChange != 0)
+        {
+            if (e.VerticalOffset == 0)
+            {
                 MinYHitCommand.Execute(e);
             }
 
-            if (e.VerticalOffset == e.ExtentHeight - e.ViewportHeight) {
+            if (e.VerticalOffset == e.ExtentHeight - e.ViewportHeight)
+            {
                 MaxYHitCommand.Execute(e);
             }
         }

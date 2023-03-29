@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using System.Windows;
+
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
-using System;
-using System.Windows;
 
 using WPFWeather.HostBuilder;
 using WPFWeather.Models;
@@ -15,17 +15,21 @@ using WPFWeather.Services.WeatherProvider;
 using WPFWeather.Stores;
 using WPFWeather.ViewModels;
 
-namespace WPFWeather {
+namespace WPFWeather
+{
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application {
+    public partial class App : Application
+    {
         private readonly IHost _host;
 
-        public App() {
+        public App()
+        {
             _host = Host.CreateDefaultBuilder()
                 .AddViewModels()
-                .ConfigureServices((context, services) => {
+                .ConfigureServices((context, services) =>
+                {
                     services.AddSingleton<IWeatherProvider, MeteoWeatherProvider>();
                     services.AddSingleton<ILocationProvider, GeocodeLocationProvider>();
 
@@ -37,14 +41,16 @@ namespace WPFWeather {
                     services.AddSingleton<NavigationBackService>();
 
                     services.AddSingleton<NavigationStore>();
-                    services.AddSingleton(s => new MainWindow() {
+                    services.AddSingleton(s => new MainWindow()
+                    {
                         DataContext = s.GetRequiredService<MainViewModel>()
                     });
                 })
                 .Build();
         }
 
-        protected override void OnStartup(StartupEventArgs e) {
+        protected override void OnStartup(StartupEventArgs e)
+        {
             _host.Start();
 
             SetInitialView();
@@ -55,35 +61,43 @@ namespace WPFWeather {
             base.OnStartup(e);
         }
 
-        protected override void OnExit(ExitEventArgs e) {
+        protected override void OnExit(ExitEventArgs e)
+        {
             SavePersistentData();
             _host.Dispose();
             base.OnExit(e);
         }
 
-        private void SetInitialView() {
+        private void SetInitialView()
+        {
             IPersistentDataManager persistentDataManager = _host.Services.GetRequiredService<IPersistentDataManager>();
             PersistentData? persistentData = null;
-            try {
+            try
+            {
                 persistentData = persistentDataManager.GetPersistentData();
             }
             catch (Exception) { }
 
-            if (persistentData?.Location != null) {
+            if (persistentData?.Location != null)
+            {
                 NavigationService<WeatherHomeViewModel> navigationService = _host.Services.GetRequiredService<NavigationService<WeatherHomeViewModel>>();
                 navigationService.Navigate();
             }
-            else {
+            else
+            {
                 NavigationService<WelcomeViewModel> navigationService = _host.Services.GetRequiredService<NavigationService<WelcomeViewModel>>();
                 navigationService.Navigate();
             }
         }
 
-        private void SavePersistentData() {
+        private void SavePersistentData()
+        {
             var appStore = _host.Services.GetRequiredService<AppStore>();
             var persistentDataManager = _host.Services.GetRequiredService<IPersistentDataManager>();
-            if (appStore.Location != null) {
-                persistentDataManager.SaveData(new PersistentData() {
+            if (appStore.Location != null)
+            {
+                persistentDataManager.SaveData(new PersistentData()
+                {
                     Location = appStore.Location
                 });
             }

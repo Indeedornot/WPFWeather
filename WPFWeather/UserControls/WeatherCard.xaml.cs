@@ -9,30 +9,36 @@ namespace WPFWeather.UserControls;
 /// <summary>
 /// Interaction logic for WeatherCard.xaml
 /// </summary>
-public partial class WeatherCard : UserControl {
-    public WeatherCard() {
+public partial class WeatherCard : UserControl
+{
+    public WeatherCard()
+    {
         InitializeComponent();
     }
 
     public string TimeString => Time.ToString("HH:mm");
     public string DateString => Time.ToString("dd-MM");
 
-    public string Temperature {
+    public string Temperature
+    {
         get => (string)GetValue(TemperatureProperty);
         set => SetValue(TemperatureProperty, value);
     }
 
-    public DateTime Time {
+    public DateTime Time
+    {
         get => (DateTime)GetValue(TimeProperty);
         set => SetValue(TimeProperty, value);
     }
 
-    public bool Loading {
+    public bool Loading
+    {
         get => (bool)GetValue(LoadingProperty);
         set => SetValue(LoadingProperty, value);
     }
 
-    public WeatherType Description {
+    public WeatherType Description
+    {
         get => (WeatherType)GetValue(DescriptionProperty);
         set => SetValue(DescriptionProperty, value);
     }

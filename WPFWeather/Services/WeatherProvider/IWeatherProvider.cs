@@ -8,7 +8,8 @@ using WPFWeather.Models;
 using WPFWeather.Models.LocationInfo;
 
 namespace WPFWeather.Services.WeatherProvider;
-public interface IWeatherProvider {
+public interface IWeatherProvider
+{
     /// <summary>
     /// Fetches WeatherData for the given location
     /// </summary>

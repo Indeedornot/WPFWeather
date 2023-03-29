@@ -11,15 +11,18 @@ using System.Threading.Tasks;
 using WPFWeather.Models.LocationInfo;
 
 namespace WPFWeather.Services.LocationProvider;
-internal class GeocodeLocationProvider : ILocationProvider {
+internal class GeocodeLocationProvider : ILocationProvider
+{
     private readonly HttpClient httpClient;
 
-    public GeocodeLocationProvider() {
+    public GeocodeLocationProvider()
+    {
         httpClient = new HttpClient();
     }
 
     //TODO: Think about error handling
-    public async Task<Location?> GetLocationByAddressAsync(Address address) {
+    public async Task<Location?> GetLocationByAddressAsync(Address address)
+    {
         string requestUri = CreateRequestUri(city: address.CityName);
         var response = await httpClient.GetFromJsonAsync<List<GeocodeLocationModel>>(requestUri);
 
@@ -29,7 +32,8 @@ internal class GeocodeLocationProvider : ILocationProvider {
         return GeocodeModelToLocation(location);
     }
 
-    public async Task<Location?> GetLocationByZipCodeAsync(ZipCode zipCode) {
+    public async Task<Location?> GetLocationByZipCodeAsync(ZipCode zipCode)
+    {
         string requestUri = CreateRequestUri(postalcode: zipCode.PostalCode, country: zipCode.CountryCode);
         var response = await httpClient.GetFromJsonAsync<List<GeocodeLocationModel>>(requestUri);
 
@@ -39,7 +43,8 @@ internal class GeocodeLocationProvider : ILocationProvider {
         return GeocodeModelToLocation(location);
     }
 
-    private static string CreateRequestUri(string housenumber = "", string streetname = "", string city = "", string county = "", string state = "", string country = "", string postalcode = "") {
+    private static string CreateRequestUri(string housenumber = "", string streetname = "", string city = "", string county = "", string state = "", string country = "", string postalcode = "")
+    {
         var uri = new StringBuilder();
         uri.Append("https://geocode.maps.co/search?");
         uri.Append("housenumber=" + housenumber);
@@ -53,8 +58,10 @@ internal class GeocodeLocationProvider : ILocationProvider {
         return uri.ToString();
     }
 
-    private static Location GeocodeModelToLocation(GeocodeLocationModel model) {
-        return new Location() {
+    private static Location GeocodeModelToLocation(GeocodeLocationModel model)
+    {
+        return new Location()
+        {
             CityName = model.DisplayName.Split(",")[0],
             Latitude = double.Parse(model.Lat, CultureInfo.InvariantCulture),
             Longitude = double.Parse(model.Lon, CultureInfo.InvariantCulture)

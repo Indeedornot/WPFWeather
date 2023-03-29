@@ -8,20 +8,25 @@ using WPFWeather.Services.WeatherProvider;
 using WPFWeather.Stores;
 
 namespace WPFWeather.ViewModels.SetLocation;
-public class SetAddressViewModel : ViewModelBase, IViewModelSetLocation {
+public class SetAddressViewModel : ViewModelBase, IViewModelSetLocation
+{
     private string _cityName = string.Empty;
-    public string CityName {
+    public string CityName
+    {
         get => _cityName;
-        set {
+        set
+        {
             _cityName = value;
             OnPropertyChanged(nameof(CityName));
         }
     }
 
     private string? _errorMessage = string.Empty;
-    public string? ErrorMessage {
+    public string? ErrorMessage
+    {
         get => _errorMessage;
-        set {
+        set
+        {
             _errorMessage = value;
             OnPropertyChanged(nameof(ErrorMessage));
             OnPropertyChanged(nameof(HasError));
@@ -33,12 +38,14 @@ public class SetAddressViewModel : ViewModelBase, IViewModelSetLocation {
     public SetLocationCommand SumbitCommand { get; }
 
     private readonly ILocationProvider _locationProvider;
-    public SetAddressViewModel(ILocationProvider locationProvider, AppStore appStore, NavigationService<WeatherHomeViewModel> weatherHomeNavigationService) {
+    public SetAddressViewModel(ILocationProvider locationProvider, AppStore appStore, NavigationService<WeatherHomeViewModel> weatherHomeNavigationService)
+    {
         _locationProvider = locationProvider;
         SumbitCommand = new SetLocationCommand(this, appStore, weatherHomeNavigationService);
     }
 
-    public async Task<Location?> GetLocation() {
+    public async Task<Location?> GetLocation()
+    {
         return await _locationProvider.GetLocationByAddressAsync(new Address(CityName));
     }
 }

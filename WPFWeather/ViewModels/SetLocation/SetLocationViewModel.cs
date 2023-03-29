@@ -7,11 +7,14 @@ using WPFWeather.Services.WeatherProvider;
 using WPFWeather.Stores;
 
 namespace WPFWeather.ViewModels.SetLocation;
-public class SetLocationViewModel : ViewModelBase {
+public class SetLocationViewModel : ViewModelBase
+{
     private string _locationType;
-    public string LocationType {
+    public string LocationType
+    {
         get => _locationType;
-        set {
+        set
+        {
             _locationType = value;
             ChooseLocationType(_locationType);
             OnPropertyChanged(nameof(LocationType));
@@ -19,9 +22,11 @@ public class SetLocationViewModel : ViewModelBase {
     }
 
     private IViewModelSetLocation _currentViewModel;
-    public IViewModelSetLocation CurrentViewModel {
+    public IViewModelSetLocation CurrentViewModel
+    {
         get => _currentViewModel;
-        set {
+        set
+        {
             _currentViewModel = value;
             OnPropertyChanged(nameof(CurrentViewModel));
         }
@@ -33,7 +38,8 @@ public class SetLocationViewModel : ViewModelBase {
     private readonly SetAddressViewModel _setAddressViewModel;
     private readonly SetZipCodeViewModel _setZipCodeViewModel;
 
-    public SetLocationViewModel(ILocationProvider locationProvider, AppStore appStore, NavigationService<WeatherHomeViewModel> weatherHomeNavigationService, NavigationBackService navigationBackService) {
+    public SetLocationViewModel(ILocationProvider locationProvider, AppStore appStore, NavigationService<WeatherHomeViewModel> weatherHomeNavigationService, NavigationBackService navigationBackService)
+    {
         ChooseLocationTypeCommand = new ChooseLocationTypeCommand(this);
         CancelCommand = new NavigateBackCommand(navigationBackService);
 
@@ -45,8 +51,10 @@ public class SetLocationViewModel : ViewModelBase {
     }
 
     //For more models I'd go with a DI factory methods
-    public void ChooseLocationType(string locationType) {
-        CurrentViewModel = locationType switch {
+    public void ChooseLocationType(string locationType)
+    {
+        CurrentViewModel = locationType switch
+        {
             "Address" => _setAddressViewModel,
             "ZipCode" => _setZipCodeViewModel,
             _ => throw new ArgumentException("Invalid location type"),

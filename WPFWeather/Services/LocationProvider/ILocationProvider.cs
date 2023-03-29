@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 using WPFWeather.Models.LocationInfo;
 
 namespace WPFWeather.Services.LocationProvider;
-public interface ILocationProvider {
+public interface ILocationProvider
+{
     public Task<Location?> GetLocationByZipCodeAsync(ZipCode zipCode);
     public Task<Location?> GetLocationByAddressAsync(Address address);
 }

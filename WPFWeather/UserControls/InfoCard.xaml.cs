@@ -6,22 +6,27 @@ namespace WPFWeather.UserControls;
 /// <summary>
 /// Interaction logic for InfoCard.xaml
 /// </summary>
-public partial class InfoCard : UserControl {
-    public InfoCard() {
+public partial class InfoCard : UserControl
+{
+    public InfoCard()
+    {
         InitializeComponent();
     }
 
-    public string Info {
+    public string Info
+    {
         get => (string)GetValue(InfoProperty);
         set => SetValue(InfoProperty, value);
     }
 
-    public string Text {
+    public string Text
+    {
         get => (string)GetValue(TextProperty);
         set => SetValue(TextProperty, value);
     }
 
-    public Control Icon {
+    public Control Icon
+    {
         get => (Control)GetValue(IconProperty);
         set => SetValue(IconProperty, value);
     }

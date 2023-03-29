@@ -12,21 +12,25 @@ using WPFWeather.Models;
 using WPFWeather.Models.LocationInfo;
 
 namespace WPFWeather.Services.WeatherProvider;
-internal class MeteoWeatherProvider : IWeatherProvider {
+internal class MeteoWeatherProvider : IWeatherProvider
+{
     private readonly HttpClient httpClient;
 
-    public MeteoWeatherProvider() {
+    public MeteoWeatherProvider()
+    {
         httpClient = new HttpClient();
     }
 
-    public async Task<IEnumerable<WeatherData>> GetWeatherAsync(Location location, DateTime from, DateTime to, CancellationToken? cancellationToken) {
+    public async Task<IEnumerable<WeatherData>> GetWeatherAsync(Location location, DateTime from, DateTime to, CancellationToken? cancellationToken)
+    {
         string requestUri = CreateRequestUri(location, from, to);
         MeteoWeatherModel response = await httpClient.GetFromJsonAsync<MeteoWeatherModel>(requestUri, cancellationToken: cancellationToken ?? CancellationToken.None);
         //TODO: Errors
         return MeteoModelToWeatherData(response);
     }
 
-    public string CreateRequestUri(Location location, DateTime from, DateTime to) {
+    public string CreateRequestUri(Location location, DateTime from, DateTime to)
+    {
         var builder = new StringBuilder();
         builder.Append("https://api.open-meteo.com/v1/forecast?");
         builder.Append($"latitude={location.Latitude.ToString(CultureInfo.InvariantCulture)}");
@@ -49,11 +53,14 @@ internal class MeteoWeatherProvider : IWeatherProvider {
         return builder.ToString();
     }
 
-    private static IEnumerable<WeatherData> MeteoModelToWeatherData(MeteoWeatherModel model) {
+    private static IEnumerable<WeatherData> MeteoModelToWeatherData(MeteoWeatherModel model)
+    {
         var weatherData = new List<WeatherData>();
 
-        for (int i = 0; i < model.Hourly.Temperature.Count; i++) {
-            weatherData.Add(new WeatherData() {
+        for (int i = 0; i < model.Hourly.Temperature.Count; i++)
+        {
+            weatherData.Add(new WeatherData()
+            {
                 Temperature = model.Hourly.Temperature[i],
                 Time = DateTime.Parse(model.Hourly.Time[i]),
                 WindSpeed = model.Hourly.Windspeed[i],
@@ -69,8 +76,10 @@ internal class MeteoWeatherProvider : IWeatherProvider {
         return weatherData;
     }
 
-    private static WeatherType WeatherCodeToWeatherType(int weatherCode) {
-        return weatherCode switch {
+    private static WeatherType WeatherCodeToWeatherType(int weatherCode)
+    {
+        return weatherCode switch
+        {
             0 => WeatherType.Clear,
             1 or 2 or 3 => WeatherType.PartlyCloudy,
             45 or 48 => WeatherType.Fog,

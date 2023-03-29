@@ -17,8 +17,10 @@ namespace WPFWeather.Views.SetLocation;
 /// <summary>
 /// Interaction logic for SetZipCodeView.xaml
 /// </summary>
-public partial class SetZipCodeView : UserControl {
-    public SetZipCodeView() {
+public partial class SetZipCodeView : UserControl
+{
+    public SetZipCodeView()
+    {
         InitializeComponent();
     }
 }

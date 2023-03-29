@@ -17,8 +17,10 @@ namespace WPFWeather.Views.SetLocation;
 /// <summary>
 /// Interaction logic for SetLocationView.xaml
 /// </summary>
-public partial class SetLocationView : UserControl {
-    public SetLocationView() {
+public partial class SetLocationView : UserControl
+{
+    public SetLocationView()
+    {
         InitializeComponent();
     }
 }

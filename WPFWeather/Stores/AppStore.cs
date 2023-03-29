@@ -1,11 +1,11 @@
-﻿using Newtonsoft.Json.Linq;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
+using Newtonsoft.Json.Linq;
 
 using WPFWeather.Models;
 using WPFWeather.Models.LocationInfo;
@@ -14,14 +14,17 @@ using WPFWeather.Services.WeatherProvider;
 
 namespace WPFWeather.Stores;
 
-public class AppStore {
+public class AppStore
+{
     private List<WeatherData> _weatherForecasts;
     public IEnumerable<WeatherData> WeatherForecasts => _weatherForecasts;
 
     private Location? _location;
-    public Location? Location {
+    public Location? Location
+    {
         get => _location;
-        private set {
+        private set
+        {
             if (_location == value) return;
 
             _location = value;
@@ -33,9 +36,11 @@ public class AppStore {
     /// <summary>
     /// Signals fetching of initial data or refetching weatherForecasts
     /// </summary>
-    public bool IsLoading {
+    public bool IsLoading
+    {
         get => _isLoading;
-        private set {
+        private set
+        {
             if (_isLoading == value) return;
 
             _isLoading = value;
@@ -53,7 +58,8 @@ public class AppStore {
 
     private readonly IWeatherProvider _weatherProvider;
     private readonly IPersistentDataManager _dataManager;
-    public AppStore(IWeatherProvider weatherProvider, IPersistentDataManager dataManager) {
+    public AppStore(IWeatherProvider weatherProvider, IPersistentDataManager dataManager)
+    {
         _weatherProvider = weatherProvider;
         _dataManager = dataManager;
 
@@ -61,12 +67,15 @@ public class AppStore {
         _initializeTask = new(Initialize);
     }
 
-    public void SetLocation(Location? location) {
+    public void SetLocation(Location? location)
+    {
         Location = location;
     }
 
-    public void SetWeather(IEnumerable<WeatherData> weather) {
-        if (weather is null) {
+    public void SetWeather(IEnumerable<WeatherData> weather)
+    {
+        if (weather is null)
+        {
             _weatherForecasts.Clear();
             WeatherForecastsChanged?.Invoke(_weatherForecasts);
             return;
@@ -80,7 +89,8 @@ public class AppStore {
         WeatherForecastsChanged?.Invoke(_weatherForecasts);
     }
 
-    public void AddPastWeather(IEnumerable<WeatherData> weather) {
+    public void AddPastWeather(IEnumerable<WeatherData> weather)
+    {
         if (weather is null) return;
 
         var weatherList = weather.ToList();
@@ -91,7 +101,8 @@ public class AppStore {
         WeatherForecastsChanged?.Invoke(_weatherForecasts);
     }
 
-    public void AddFutureWeather(IEnumerable<WeatherData> weather) {
+    public void AddFutureWeather(IEnumerable<WeatherData> weather)
+    {
         if (weather is null) return;
 
         var weatherList = weather.ToList();
@@ -109,8 +120,10 @@ public class AppStore {
     /// <returns></returns>
     /// <exception cref="System.Net.Http.HttpRequestException"></exception>
     /// <exception cref="ArgumentException"></exception>
-    public async Task ResetWeather(CancellationToken? cancellationToken = null) {
-        if (Location == null) {
+    public async Task ResetWeather(CancellationToken? cancellationToken = null)
+    {
+        if (Location == null)
+        {
             throw new ArgumentException("Location is null");
         }
 
@@ -120,7 +133,8 @@ public class AppStore {
         lastFetched = oldestFetched = DateTime.Now;
         latestFetched = DateTime.Now.AddDays(3);
 
-        try {
+        try
+        {
             IEnumerable<WeatherData> weather = await _weatherProvider.GetWeatherAsync(Location, oldestFetched, latestFetched, cancellationToken);
 
             LastFetched = lastFetched;
@@ -131,7 +145,8 @@ public class AppStore {
             WeatherForecastsChanged?.Invoke(_weatherForecasts);
             IsLoading = false;
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             IsLoading = false;
             Debug.WriteLine("Error while fetching weather: ", e.Message);
             throw;
@@ -143,11 +158,14 @@ public class AppStore {
     /// <br/> Initialy loads the data from the persistent storage and fetches weather
     /// </summary>
     /// <returns></returns>
-    public async Task Load() {
-        try {
+    public async Task Load()
+    {
+        try
+        {
             await _initializeTask.Value;
         }
-        catch (Exception) {
+        catch (Exception)
+        {
             _initializeTask = new(Initialize);
             IsLoading = false;
         }
@@ -156,24 +174,29 @@ public class AppStore {
     private Lazy<Task> _initializeTask;
     public bool IsInitialized => _initializeTask.IsValueCreated;
 
-    private async Task Initialize() {
+    private async Task Initialize()
+    {
         IsLoading = true;
 
         PersistentData? persistentData = GetPersistentData();
         Location = persistentData?.Location;
 
-        if (!WeatherForecasts.Any() && Location != null) {
+        if (!WeatherForecasts.Any() && Location != null)
+        {
             await ResetWeather();
         }
 
         IsLoading = false;
     }
 
-    private PersistentData? GetPersistentData() {
-        try {
+    private PersistentData? GetPersistentData()
+    {
+        try
+        {
             return _dataManager.GetPersistentData();
         }
-        catch {
+        catch
+        {
             return null;
         }
     }
